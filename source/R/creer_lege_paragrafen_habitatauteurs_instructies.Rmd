@@ -1,0 +1,24 @@
+---
+params: 
+  id: "zilt"
+  paragraaf: "inleiding"
+output:
+  pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+In ieder van de documenten schrijf je een stuk tekst dat bij het desbetreffende hoofdstuk, de figuur of tabel hoort. 
+
+Indien je tekst in *italics* wil schrijven, doe je dat door voor en na dit stuk tekst een '\*'asterisk'\*' te zetten. Voor bold tekst, zet je twee '\*\*'asterisken'\*\*' voor en na je stuk tekst.
+
+Je kan ook refereren naar de verschillende tabellen en figuren in het originele document, dat doe je zo:
+
+- Schrijf tabel \\@ref(tab:`r params$id`-habitattypen) om te refereren naar de tabel met de verschillende habitattypes en habitatname.
+- Schrijf figuur \\@ref(fig:`r params$id`-areaal-verspreiding) om te refereren naar de figuur met kaart(en) van het areaal en de verspreiding.
+- Schrijf tabel \\@ref(tab:`r params$id`-areaal-tabel) om te refereren naar de tabel met trend, FRR en eindconclusie(s) voor het areaal.
+- Schrijf figuur \\@ref(fig:`r params$id`-oppervlakte-bars) om te refereren naar de bar chart figuren.
+- Schrijf tabel \\@ref(tab:`r params$id`-oppervlakte) om te refereren naar de tabel beste oppervlaktewaarde (totaal voor Vlaanderen), aandeel in het SBZ-H-netwerk, trendrichting, relatie tot de referentieoppervlakte voor regionaal gunstige toestand (FRA) en eindconclusie voor habitatoppervlakte
