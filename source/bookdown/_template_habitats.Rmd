@@ -1,0 +1,333 @@
+```{r {{id}}-setup}
+ttl <- list(zilt = "Zilte habitattypen en estuarium (11xx en 13xx)",
+            kustduin = "Kustduinhabitattypen (21xx)", 
+            water = "Waterhabitattypen (31xx en 32xx)", 
+            heide = "Heide- en struweelhabitattypen (23xx, 40xx en 5130)", 
+            gras = "Graslandhabitattypen (6120, 62xx, 64xx en 6510", 
+            veen = "Veenhabitattypen (71xx en 72xx)",
+            rots = "Rotsachtige habitattypen en grotten (8310)", 
+            bos = "Boshabitattypen (91xx)"
+           )
+
+if (interactive()) {
+  this_hab <- sample(c("zilt", "kustduin", "water", "heide", "gras", "veen", 
+                       "rots", "bos"), 1)
+} else {
+  this_hab <- "{{id}}"
+}
+title <- ttl[[this_hab]]
+# mapdata1 <- data[[str_c(this_hab, "2013")]]$valid_eng
+# refdata1 <- as.factor(points_id$lu13oord_eng)
+# mapdata2 <- data[[str_c(this_hab, "2016")]]$valid_eng
+# refdata2 <- as.factor(points_id$lu16oord_eng)
+# maparea <- area[[this_hab]]
+```
+# `r title`
+Auteurs: 
+
+Dit hoofdstuk behandelt de habitattyppen in tabel \@ref(tab:{{id}}-habitattypen).
+```{r {{id}}-habitattypen, message = FALSE}
+habitattypes %>%
+  filter(typelevel == "main_type") %>%
+  filter(!(main_type %in% c('9110', '9150', '1110') |
+             str_detect(main_type, "rbb")),
+         id == this_hab) %>%
+  select(main_type, `type_name`,
+         `type_shortname`) %>%
+  kable(col.names = c("code", "habitatnaam", "verkorte naam"),
+        caption = "Overzicht van de habitattypes.",
+        booktabs = TRUE,
+        longtable = TRUE) %>%
+  kable_styling() %>%
+  column_spec(2, width = "9cm") %>%
+  column_spec(3, width = "4cm")
+```
+
+```{r, child = find_root_file("habitatauteurs_paragrafen", sprintf("%s_inleiding.md", this_hab), criterion = has_file("bookdown.Rproj"))}
+```
+
+## Areaal
+
+```{r {{id}}-areaal-verspreiding, echo = FALSE, fig.cap = "Verspreiding, areaal en referentieareaal voor regionaal gunstige toestand (FRR). De verspreiding wordt zowel met de vlakken van de habitatkaart, als in het EU-raster 10 x 10 km² gegeven.", out.width = '100%'}
+knitr::include_graphics(find_root_file("externe_figuren",
+                                       sprintf("%s_areaal.jpg", this_hab),
+                                       criterion = has_file("bookdown.Rproj")))
+```
+
+```{r {{id}}-areaal-tabel, echo = FALSE, message = FALSE}
+data_areaal %>% filter(hab == this_hab) %>%
+  pivot_wider(names_from = type,
+              values_from = value) %>% {. ->> b } %>%
+  left_join(trend_translate, by = c("trend" = "trendeng")) %>%
+  left_join(status_translate, by = c("conclusie" = "statuseng")) %>%
+  dplyr::select(code, trendnl, frr, statusnl) %>%
+  arrange(code) %>%
+  kable(booktabs = TRUE, 
+        #format = "latex",
+        col.names = c("","Trend t.o.v. vorige rapportage", "FRR", 
+                     "Eindconclusie"),
+        caption = paste0("Trendrichting, relatie tot het referentieareaal voor regionaal gunstige toestand (FRR) en eindconclusie voor het areaal (", legende_caption(trend = b$trend, FRR_areaal = b$frr),")")) %>%
+  kable_styling() %>%
+  column_spec(2, width = "3cm")
+  
+  
+```
+
+```{r, child = find_root_file("habitatauteurs_paragrafen", sprintf("%s_areaal.md", this_hab), criterion = has_file("bookdown.Rproj"))}
+```
+
+## Oppervlakte in geheel Vlaanderen en in het SBZ-H-Netwerk
+
+```{r {{id}}-oppervlakte-bars, echo = FALSE, fig.cap = "Verspreiding, areaal en referentieareaal voor regionaal gunstige toestand (FRR). De verspreiding wordt zowel met de vlakken van de habitatkaart, als in het EU-raster 10 x 10 km² gegeven.", out.width = '100%'}
+knitr::include_graphics(find_root_file("externe_figuren",
+                                       sprintf("%s_areaal.jpg", this_hab),
+                                       criterion = has_file("bookdown.Rproj")))
+```
+```{r {{id}}-oppervlakte, echo = FALSE, message = FALSE}
+data_area %>% filter(hab == this_hab) %>%
+  pivot_wider(names_from = type,
+              values_from = value) %>% {. ->> b } %>%
+  left_join(trend_translate, by = c("trend" = "trendeng")) %>%
+  left_join(status_translate, by = c("conclusie" = "statuseng")) %>%
+  mutate(area = as.numeric(str_replace(area,',','.'))*100,#vierkante kilometer naar hectare
+         sbz = round(as.numeric(str_replace(areasbz,',','.'))/area*10000)) %>%#percentage in sbz
+  dplyr::select(code, area, sbz, trendnl, fra, statusnl) %>%
+  arrange(code) %>%
+  kable(booktabs = TRUE, 
+        #format = "latex",
+        col.names = c("","Oppervlakte Vlaanderen (ha)", 
+                      "Aandeel in SBZ-H (percentage)", 
+                      "Trend t.o.v. vorige rapportage", "FRA", "Eindconclusie"),
+        caption = paste0("Beste oppervlaktewaarde (totaal voor Vlaanderen), aandeel in het SBZ-H-netwerk, trendrichting, relatie tot de referentieoppervlakte voor regionaal gunstige toestand (FRA) en eindconclusie voor habitatoppervlakte (", legende_caption(trend = b$trend, FRA_area = b$fra),")")) %>%
+  kable_styling() %>%
+  column_spec(2, width = "2.5cm") %>%
+  column_spec(3, width = "2.5cm") %>%
+  column_spec(4, width = "2.5cm")
+```
+
+```{r, child = find_root_file("habitatauteurs_paragrafen", sprintf("%s_oppervlakte.md", this_hab), criterion = has_file("bookdown.Rproj"))}
+```
+
+## Specifieke structuren en functies in geheel Vlaanderen en in het SBZ-H-Netwerk
+ 
+ 
+### Beoordeling regionale toestand
+```{r {{id}}-voorbereidinghabitatkwaliteit }
+colors_status <- c("Ongunstig" = inbo_rood, "Gunstig" = inbo_groen, 
+                   "Onbekend" = inbo_grijs)
+data_stathab <- data_statushabitat %>%
+  filter(Habitattype %in% 
+           unlist(habitattypes[habitattypes$id == this_hab, "main_type"]) & 
+           !(Habitattype %in% c('9110', '9150', '1110') |
+             str_detect(Habitattype, "rbb")) & 
+           (TypeResultaat == "Habitattype" | is.na(TypeResultaat)) #& 
+           # (SBZH == "Binnen & Buiten") & 
+           # (Schaal == "Vlaanderen")
+        ) 
+if (nrow(data_stathab) > 0) {
+  grenswaardes <- unique(data_stathab$Grenswaarde)
+  heights <- sapply(grenswaardes, 
+                    FUN = function(x){
+                      length(unique(
+                        data_stathab[data_stathab$Grenswaarde == x, 
+                                     "Habitattype"]))})
+  height_figure <- 1 * (length(heights)) + 0.5 * sum(heights)
+}
+```
+```{r {{id}}-aandeelGunstigeStaat, echo = FALSE, message = FALSE, fig.cap = "Oppervlakteaandeel (schatting o.b.v. steekproef, met 95\\%-betrouwbaarheidsinterval) in gunstige staat in Vlaanderen, zowel volgens toepassing van Oosterlynck et al. (2018) als van T’jollyn et al. (2009). De verticale onderbroken lijn geeft de grenswaarde voor gunstige toestand weer.", eval = nrow(data_stathab) > 0, fig.height = height_figure}
+
+plots <- lapply(X = grenswaardes, 
+                FUN = function(x) plot_statushabitat(data_stathab, x))
+  
+wrap_plots(plots, ncol = 1, 
+           guides = "collect",
+           heights = heights) & 
+  theme(legend.position = "bottom")
+```
+
+```{r {{id}}-specifiekestructuren-eindoordeel, echo = FALSE, message = FALSE}
+data_struc_func_final %>% filter(hab == this_hab) %>%
+  pivot_wider(names_from = type,
+              values_from = value) %>% {. ->> b } %>%
+  left_join(trend_translate, by = c("trend" = "trendeng")) %>%
+  left_join(status_translate, by = c("Oosterlynckx" = "statuseng")) %>%
+  rename(Oosterlynckx2 = statusnl) %>%
+  left_join(status_translate, by = c("TJollyn" = "statuseng")) %>%
+  rename(TJollyn2 = statusnl) %>%
+  dplyr::select(code, Oosterlynckx2, TJollyn2, trendnl) %>%
+  arrange(code) %>%
+  kable(booktabs = TRUE, 
+        #format = "latex",
+        col.names = c("","volgens Oosterlynck et al. (2018)", 
+                      "volgens T’jollyn et al. (2009)", 
+                      "Trend"),
+        caption = paste0("Eindoordeel en trend voor specifieke structuren en functies (inclusief ruimtelijke samenhang en typische soorten), zowel volgens toepassing van Oosterlynck et al. (2018) als van T’jollyn et al. (2009) (", legende_caption(trend = b$trend),")")) %>%
+  kable_styling() %>%
+  column_spec(2, width = "4cm") %>%
+  column_spec(3, width = "4cm") 
+```
+
+### Beoordeling LSVI indicator
+
+```{r {{id}}-voorbereidinghabitatkwaliteit2, warning = FALSE, message = FALSE }
+data_lsvi <- data_aandeelgunstig %>%
+  filter(Habitattype %in% 
+           unlist(habitattypes[habitattypes$id == this_hab, "main_type"]) & 
+           !(Habitattype %in% c('9110', '9150', '1110') |
+             str_detect(Habitattype, "rbb")) &
+           (TypeResultaat == "Habitattype" | is.na(TypeResultaat))
+        ) %>%
+  dplyr::select(!c(Criterium, Belang)) %>%
+  mutate(Indicator = str_replace(Indicator, "\xeb","ë"),
+         Indicator = str_replace(Indicator, "\xe9\xe9","éé")) %>%
+  left_join(invoerVer, by = c("Habitattype", "Versie", "Indicator")) %>% #invoerVer wordt opgehaald in 4_Rapport_per_habitat.Rmd
+  mutate(Indicatorbis = tolower(Indicator)) 
+
+if (nrow(data_lsvi) > 0) {
+  tekst_belang <- data_lsvi %>%
+    select(Criterium, Indicator, Indicatorbis, Belang) %>%
+    unique() %>%
+    mutate(tekst_face = ifelse(Belang == "zb", "bold", "plain")) %>%
+    arrange(Criterium, Indicator)
+  
+  habs <- unique(data_lsvi$Habitattype)
+  heights <- sapply(habs, 
+                    FUN = function(x){
+                      indicators <- length(unique(
+                        data_lsvi[data_lsvi$Habitattype == x, 
+                                     "Indicator"]))
+                      criteria <- length(unique(
+                        data_lsvi[data_lsvi$Habitattype == x, 
+                                     "Criterium"]))
+                      return(c(indicators, criteria))})
+  height_figure <- 2 * (length(heights)) + 1 * sum(heights)
+  plots <- lapply(X = habs, 
+                FUN = function(x) plot_indicatoren(data_lsvi, x))
+}
+```
+
+```{r}
+for (i in 1:length(habs)) {
+  if (!file.exists(sprintf("figuren/lsvi/{{id}}-LSVI-fig%s.pdf", habs[i]))) { 
+    ggsave(plot = plots[[i]],
+           filename = sprintf("figuren/lsvi/{{id}}-LSVI-fig%s.pdf", habs[i]),
+           height = heights[1,i]/2, width = 7)
+  }
+}
+```
+
+```{r results='asis'}
+
+cat(
+sprintf(
+"\\begin{figure}\n\n{\\centering \\includegraphics{figuren/lsvi/{{id}}-LSVI-fig%s.pdf}}\n\n\\caption{%s}(\\#fig:lsvifiguur%s)\n\n\\end{figure}", habs, "test", habs),
+  sep = "\n"
+)
+
+```
+
+
+
+### Vergelijking resultaten Oosterlynck et al. 2018 versus T'Jollyn et al. 2009
+
+## Drukken en bedreigingen
+
+```{r {{id}}-drukkenbedreigingen, echo = FALSE, message = FALSE}
+data_pt %>% filter(hab == this_hab) %>%
+  mutate(pt = as.factor(pt),
+         code = as.factor(code)) %>% {. ->> b } %>%#make sure they are alphabetically
+  pivot_wider(names_from = c(pt, code), values_from = ranking) %>% 
+  mutate(code = str_sub(type, 1,1)) %>%
+  left_join(translate_pt, by = c("code" = "code")) %>%
+  arrange(type) %>%
+  mutate(categorie = factor(as.factor(categorie), 
+                            levels = translate_pt$categorie, ordered = T)) -> c 
+c %>%
+  dplyr::select(!c(hab, code, categorie))  %>% 
+  replace(is.na(.), "") %>% 
+  kable(booktabs = TRUE, 
+        longtable = TRUE,
+        #format = "latex",
+        col.names = c("Beschrijving", rep(c("P","T"), nlevels(b$code))),
+        caption = paste0("Overzicht van drukken (pressures; P) en bedreigingen (threats; T) van laag (L), matig (M) of hoog (H) belang, volgens de EC-standaardlijst.")) %>%
+  kable_styling(font_size = 7,
+                latex_options = c("striped")) %>%
+  column_spec(1, width = "5cm") %>%
+  add_header_above(data.frame(header = c('', levels(b$code)),
+                              number = c(1, rep(2, nlevels(b$code))))) %>%
+  pack_rows(index = table(c$categorie)[table(c$categorie) != 0],
+            background = "gray",#latex gebruik "gray" als standaard grijze kleur
+            color = "white")
+```
+
+
+
+## Instandhoudingsmaatregelen
+```{r {{id}}-ihm, echo = FALSE, message = FALSE}
+data_ihm %>% filter(hab == this_hab) %>%
+  mutate(value = "x") %>% {. ->> b } %>%#make sure they are alphabetically
+  pivot_wider(names_from = c(code), values_from = value) %>% 
+  arrange(ihm) %>%
+  dplyr::select(-hab)  %>% 
+  replace(is.na(.), "") -> c
+c %>%
+  kable(booktabs = TRUE, 
+        longtable = TRUE,
+        align = c('l', rep('c', length(unique(b$code)))),
+        #format = "latex",
+        col.names = c("Instandhoudingsmaatregelen", sort(unique(b$code))),
+        caption = paste0("Overzicht van de genomen instandhoudingsmaatregelen per habitattype, volgens de EC-standaardlijst.")) %>%
+  kable_styling(latex_options = c("striped")) %>%
+  column_spec(1, width = sprintf("%.0fcm", 12 - 1*length(unique(b$code)))) %>%
+  column_spec(2:(1 + length(unique(b$code))), width = "1cm") 
+```
+
+
+
+## Toekomstperspectieven
+```{r {{id}}-toekomst, echo = FALSE, message = FALSE}
+data_toekomst %>% filter(hab == this_hab) %>%#make sure they are alphabetically
+  pivot_wider(names_from = c(type), values_from = score) %>% 
+  dplyr::select(-hab) %>% 
+  arrange(code) %>%
+  left_join(status_translate, by = c("Conclusie" = "statuseng")) %>%
+  left_join(toekomst_translate, by = c("Areaal" = "toekomsteng")) %>%
+  rename(Areaal2 = toekomstnl) %>%
+  left_join(toekomst_translate, by = c("Oppervlakte" = "toekomsteng")) %>%
+  rename(Oppervlakte2 = toekomstnl) %>%
+  left_join(toekomst_translate, 
+            by = c("Structuren en functie" = "toekomsteng")) %>%
+  rename(Struct2 = toekomstnl) %>%
+  dplyr::select(code, Areaal2, Oppervlakte2, Struct2, statusnl) %>%
+  kable(booktabs = TRUE, 
+        align = c('l', rep('c', 4)),
+        #format = "latex",
+        col.names = c("", "Areaal", "Oppervlakte", "Structuren en\n functies", 
+                      "Conclusie"),
+        caption = "Samenvattende tabel van de toekomstperspectieven.") %>%
+  kable_styling(latex_options = c("striped")) 
+```
+
+
+## Conclusies
+
+```{r {{id}}-conclusie, echo = FALSE, message = FALSE}
+data_conclusie %>% filter(hab == this_hab) %>%
+  left_join(status_translate, by = c("score" = "statuseng")) %>%
+  left_join(trend_translate, by = c("score" = "trendeng")) %>%
+  mutate(score = ifelse(type == "Totaal-trend", trendlegende, statusnl)) %>% 
+  dplyr::select(!c(hab, statusnl, trendnl, trendlegende)) %>% 
+  pivot_wider(names_from = type, values_from = score) %>%
+  arrange(code) %>%
+  dplyr::select(code, Areaal, Oppervlakte, `Structuren en functie`, 
+                Toekomstperspectieven, Eindconclusie, `Totaal-trend`) %>%
+  kable(booktabs = TRUE, 
+        align = c('l', rep('c', 6)),
+        #format = "latex",
+        col.names = c("", "Areaal", "Oppervlakte", "Structuren en\n functies", 
+                      "Toekomst-\nperspectieven","Eind-\nconclusie", "Totaal-\ntrend"),
+        caption = "Samenvattende tabel van de conclusies per criterium en einduitspraak over de algemene toestand en trend van de instandhouding per habitattype.") %>%
+  kable_styling(latex_options = c("striped")) %>%
+  column_spec(2:7, width = "1.5cm") 
+```
+

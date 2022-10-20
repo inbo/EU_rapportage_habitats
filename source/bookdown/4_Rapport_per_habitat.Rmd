@@ -1,0 +1,22 @@
+```{r evaluation, results = "asis", eval = TRUE}
+library(LSVI)
+maakConnectiePool()
+invoerVer <- geefInvoervereisten() %>%
+    select(Habitattype, Versie, Criterium, Indicator, Belang) %>%
+    unique()
+library(pool)
+poolClose(ConnectiePool)
+rm(ConnectiePool)
+
+sapply(
+  c("zilt", "kustduin", "water", "heide", "gras", "veen", 
+                       "rots", 
+    "bos"),
+  function(id) {
+    knit_expand("_template_habitats.Rmd", id = id)
+  }
+) %>%
+  paste(collapse = "\n") -> rmd
+knit(text = rmd, quiet = TRUE) %>%
+  cat()
+```

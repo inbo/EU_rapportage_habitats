@@ -1,0 +1,5 @@
+language:
+  label:
+    fig: 'Figuur '
+    tab: 'Tabel '
+edit: https://github.com/RCinbo/EU_rapportage_habitats/edit/main/source/bookdown/%s

@@ -1,0 +1,24 @@
+# Inleiding
+
+De Habitatrichtlijn schrijft aan de lidstaten ondermeer een zesjaarlijkse rapportage betreffende de staat van instandhouding van de natuurlijke habitattypen van Bijlage 1 van de Habitatrichtlijn voor. Elke lidstaat is daarbij verantwoordelijk voor de rapportage van de habitattypen op zijn eigen grondgebied. Dit rapport handelt enkel over de habitattypen in Vlaanderen, met focus op het Vlaams-Atlantische deel, d.w.z. Vlaanderen excl. Voeren. Voeren maakt immers, volgens de door de Europese Commissie (EC) voorgeschreven indeling in biogeografische regio’s, deel uit van de Continentale regio. De rapportage aan de EC moet afzonderlijk gebeuren voor elk van deze biogeografische regio’s. Daarom moeten we de regionale staat van instandhouding bepalen voor het Vlaamse deel van de Belgisch-Atlantische regio. Oppervlaktegegevens en habitatlocaties worden in dit rapport wel ook op niveau Vlaanderen gegeven. Voor andere criteria van de staat van instandhouding zijn er te weinig gegevens om een afzonderlijke beoordeling voor Voeren uit te voeren, en dit valt hoe dan ook buiten de context van de rapportage aan de EC.
+
+Tabel \@ref(tab:habitattypes) geeft een overzicht van de habitattypes van Bijlage I van de Habitatrichtlijn die in Vlaanderen voorkomen en waarvoor in dit rapport een bepaling van de regionale staat van instandhouding wordt opgemaakt.
+
+```{r habitattypes}
+habitattypes %>%
+  filter(typelevel == "main_type") %>%
+  filter(!(main_type %in% c('9110', '9150', '1110') |
+             str_detect(main_type, "rbb"))) %>%
+  select(main_type, `type_name`,
+         `type_shortname`) %>%
+  kable("latex",
+        col.names = c("code", "habitatnaam", "verkorte naam"),
+        caption = "Overzicht van de habitattypes van Bijlage I van de Habitatrichtlijn die in Vlaanderen voorkomen en waarvoor in dit rapport een bepaling van de regionale staat van instandhouding wordt opgemaakt.",
+        booktabs = TRUE,
+        longtable = TRUE,
+        escape = FALSE) %>%
+  kable_styling() %>%
+  column_spec(2, width = "9cm") %>%
+  column_spec(3, width = "4cm")
+  
+```
