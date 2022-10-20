@@ -26,6 +26,9 @@ reviewer:
     email: marc.pollet@inbo.be
     orcid: 0000-0001-5198-5928
 year: 2022
+cover_photo: 
+cover_description: 
+cover: 
 doi: doi.org/10.21436/inbor.83938581
 reportnr: 22
 depotnr: D/2022/3241/240
