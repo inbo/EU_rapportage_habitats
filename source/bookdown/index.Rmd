@@ -1,0 +1,157 @@
+---
+title: Regionale staat van instandhouding voor de habitattypen van de habitatrichtlijn.
+subtitle: Rapportageperiode 2019 - 2024
+author: 
+  - firstname: Jeroen
+    name: Vanden Borre
+    email: jeroen.vandenborre@inbo.be
+    orcid: 0000-0002-0153-7243
+  - firstname: Toon
+    name: Westra
+    email: toon.westra@inbo.be
+    orcid: 0000-0003-2478-9459
+  - firstname: Raïsa
+    name: Carmen
+    email: raisa.carmen@inbo.be
+    orcid: 0000-0003-1025-8702
+shortauthor:  Vanden Borre, J., Westra, T., Carmen, R.
+corresponding: jeroen.vandenborre@inbo.be
+reviewer:
+  - firstname: Maurice
+    name: Hoffmann
+    email: maurice.hoffmann@inbo.be
+    orcid: 0000-0003-1306-8672
+  - firstname: Marc
+    name: Pollet
+    email: marc.pollet@inbo.be
+    orcid: 0000-0001-5198-5928
+year: 2022
+cover_photo: https://img2.vildaphoto.net/asset/l/113384.jpg
+cover_description: Patrijs / _Perdix perdix_. Vilda Photo /	Rollin Verlinde
+cover: 52402055cover.pdf
+doi: doi.org/10.21436/inbor.83938581
+reportnr: 22
+depotnr: D/2022/3241/240
+embargo: 2022-10-04
+style: INBO
+lang: nl
+lot: TRUE
+lof: TRUE
+site: bookdown::bookdown_site
+link-citations: TRUE
+bibliography: "bibliography.bib"
+output:
+  INBOmd::pdf_report: default
+  bookdown::dontrun: default
+---
+
+
+
+```{r setup, include = FALSE}
+library(knitr)
+opts_chunk$set(
+  echo = FALSE,
+  eval = TRUE,
+  cache = FALSE,
+  fig.width = 150 / 25.4,
+  fig.height = 100 / 25.4,
+  warning = TRUE,
+  error = FALSE,
+  message = TRUE
+)
+library(tidyverse)
+library(INBOtheme)
+library(formattable)
+library(kableExtra)
+if (interactive()) {
+  theme_set(
+    theme_inbo(
+      base_family = "Calibri", # "FlandersArtSans-Regular",
+      base_size = 10
+    )
+  )
+} else {
+  switch(
+    opts_knit$get("rmarkdown.pandoc.to"),
+    html = {
+      opts_chunk$set(dev = "png", dpi = 72)
+      theme_set(
+        theme_inbo(
+          base_family = "Calibri", # "FlandersArtSans-Regular",
+          base_size = 12
+        )
+      )
+    },
+    latex = {
+      opts_chunk$set(dev = "cairo_pdf", dpi = 300)
+      theme_set(
+        theme_inbo(
+          base_family = "Calibri", # "FlandersArtSans-Regular",
+          base_size = 9
+        )
+      )
+      update_geom_defaults("point", list(size = 1.5))
+    },
+    epub3 = {
+      opts_chunk$set(dev = "png", dpi = 300)
+      theme_set(
+        theme_inbo(
+          base_family = "Calibri", # "FlandersArtSans-Regular",
+          base_size = 12
+        )
+      )
+    }
+  )
+}
+library(patchwork)
+library(readxl)
+library(rgdal)
+library(rprojroot)
+library(sf)
+library(n2khab)
+source(find_root_file(
+    "source/r/get_habitats.r",
+    criterion = has_file("EU_rapportage_habitats.Rproj")))
+source(find_root_file(
+    "source/r/Vertalingen.r",
+    criterion = has_file("EU_rapportage_habitats.Rproj")))
+source(find_root_file(
+    "source/r/plot_habitatkwaliteit.r",
+    criterion = has_file("EU_rapportage_habitats.Rproj")))
+
+```
+```{r load_data, include = FALSE, eval = !file.exists(find_root_file("data/processed/habitatdata.Rdata", criterion = has_file("EU_rapportage_habitats.Rproj")))}
+#lees alle data
+source(find_root_file(
+    "source/r/lees_data.r",
+    criterion = has_file("EU_rapportage_habitats.Rproj")))
+```
+```{r load_data2, include = FALSE, eval = file.exists(find_root_file("data/processed/habitatdata.Rdata", criterion = has_file("EU_rapportage_habitats.Rproj")))}
+#lees alle data
+load(find_root_file("data/processed/habitatdata.Rdata", 
+                           criterion = 
+                             has_file("EU_rapportage_habitats.Rproj")))
+```
+
+# Dankwoord/voorwoord {-}
+
+
+# Samenvatting {-}
+
+## Resultaten rapportage {-}
+
+## Reële wijzigingen op terrein sinds de eerste rapportage in 2007 {-}
+
+## Overzicht van de toestand rapportage {-}
+
+## Aanbevelingen voor beheer en/of beleid {-}
+
+# English abstract {-}
+
+## Results reporting process {-}
+
+## Genuine changes since the first report in 2007 {-}
+
+## Overview of the conservation status {-}
+
+## Recommendations for management and/or policy {-}
