@@ -1,0 +1,91 @@
+Schaal;Periode;TypeResultaat;Versie;Habitattype;Habitatsubtype;SBZH;nObs;sumWeights;AandeelGunstig;AandeelGunstig_LLCI;AandeelGunstig_ULCI
+Vlaanderen;2;Habitattype;Versie 2.0;9110;9110;Binnen & Buiten;3;11,02180685;100;NA;NA
+Vlaanderen;2;SBZH;Versie 2.0;9110;9110;Binnen;2;10,02180685;100;NA;NA
+Vlaanderen;2;SBZH;Versie 2.0;9110;9110;Buiten;1;1;100;NA;NA
+Vlaanderen;2;Habitattype;Versie 3;9110;9110;Binnen & Buiten;3;11,02180685;100;NA;NA
+Vlaanderen;2;SBZH;Versie 3;9110;9110;Binnen;2;10,02180685;100;NA;NA
+Vlaanderen;2;SBZH;Versie 3;9110;9110;Buiten;1;1;100;NA;NA
+Vlaanderen;2;Habitattype;Versie 2.0;9120;9120;Binnen & Buiten;265;256,2555842;29,3;24,09;35,12
+Vlaanderen;2;SBZH;Versie 2.0;9120;9120;Binnen;144;135,59;52,46;44,2;60,59
+Vlaanderen;2;SBZH;Versie 2.0;9120;9120;Buiten;121;120,6655842;3,28;1,22;8,54
+Vlaanderen;2;Habitattype;Versie 3;9120;9120;Binnen & Buiten;265;256,2555842;24,65;19,78;30,26
+Vlaanderen;2;SBZH;Versie 3;9120;9120;Binnen;144;135,59;43,67;35,68;52
+Vlaanderen;2;SBZH;Versie 3;9120;9120;Buiten;121;120,6655842;3,28;1,22;8,54
+Vlaanderen;2;Habitattype;Versie 2.0;9130;9130;Binnen & Buiten;38;114,4871183;12,04;5,86;23,11
+Vlaanderen;2;SBZH;Versie 2.0;9130;9130;Binnen;29;28,23;48,81;31,26;66,66
+Vlaanderen;2;SBZH;Versie 2.0;9130;9130;Buiten;9;86,25711828;0;0;0
+Vlaanderen;2;Habitattype;Versie 3;9130;9130;Binnen & Buiten;38;114,4871183;14,66;7,38;27,01
+Vlaanderen;2;SBZH;Versie 3;9130;9130;Binnen;29;28,23;59,44;40,86;75,66
+Vlaanderen;2;SBZH;Versie 3;9130;9130;Buiten;9;86,25711828;0;0;0
+Vlaanderen;2;Habitattype;Versie 2.0;9160;9160;Binnen & Buiten;47;45,84073586;20,65;11,34;34,61
+Vlaanderen;2;SBZH;Versie 2.0;9160;9160;Binnen;28;27,05839101;34,98;19,7;54,12
+Vlaanderen;2;SBZH;Versie 2.0;9160;9160;Buiten;19;18,78234486;0;0;0
+Vlaanderen;2;Habitattype;Versie 3;9160;9160;Binnen & Buiten;47;45,84073586;16,28;8,23;29,67
+Vlaanderen;2;SBZH;Versie 3;9160;9160;Binnen;28;27,05839101;27,59;14,2;46,73
+Vlaanderen;2;SBZH;Versie 3;9160;9160;Buiten;19;18,78234486;0;0;0
+Vlaanderen;2;Habitattype;Versie 2.0;9190;9190;Binnen & Buiten;59;60,83143536;4,93;1,58;14,36
+Vlaanderen;2;SBZH;Versie 2.0;9190;9190;Binnen;31;28,95868163;10,36;3,36;27,78
+Vlaanderen;2;SBZH;Versie 2.0;9190;9190;Buiten;28;31,87275373;0;0;0
+Vlaanderen;2;Habitattype;Versie 3;9190;9190;Binnen & Buiten;59;60,83143536;7,11;2,65;17,71
+Vlaanderen;2;SBZH;Versie 3;9190;9190;Binnen;31;28,95868163;10,36;3,36;27,78
+Vlaanderen;2;SBZH;Versie 3;9190;9190;Buiten;28;31,87275373;4,16;0,57;24,56
+Vlaanderen;2;Habitatsubtype;Versie 2.0;9,10E+01;91E0_sf;Binnen & Buiten;30;342,2;0;0;0
+Vlaanderen;2;Habitatsubtype;Versie 2.0;9,10E+01;91E0_va;Binnen & Buiten;51;66,2011139;14,77;7,91;25,91
+Vlaanderen;2;Habitatsubtype;Versie 2.0;9,10E+01;91E0_vc;Binnen & Buiten;25;23,90073295;43,62;24,81;64,47
+Vlaanderen;2;Habitatsubtype;Versie 2.0;9,10E+01;91E0_vm;Binnen & Buiten;38;41,61718505;14,58;6,62;29,13
+Vlaanderen;2;Habitatsubtype;Versie 2.0;9,10E+01;91E0_vn;Binnen & Buiten;39;43,0960588;0;0;0
+Vlaanderen;2;Habitatsubtype;Versie 2.0;9,10E+01;91E0_vo;Binnen & Buiten;19;19,8127711;0;0;0
+Vlaanderen;2;Habitattype;Versie 2.0;9,10E+01;"91E0_sf; 91E0_vc; 91E0_vm; 91E0_vo; 91E0_va; 91E0_vn";Binnen & Buiten;202;536,8278618;4,89;3,09;7,68
+Vlaanderen;2;SBZH;Versie 2.0;9,10E+01;"91E0_sf; 91E0_vc; 91E0_vo; 91E0_vm; 91E0_va; 91E0_vn";Binnen;126;393,0738161;5,37;3,28;8,66
+Vlaanderen;2;SBZH;Versie 2.0;9,10E+01;"91E0_sf; 91E0_vm; 91E0_vc; 91E0_vo; 91E0_vn; 91E0_va";Buiten;76;143,7540457;3,6;1,13;10,92
+Vlaanderen;2;Habitatsubtype;Versie 3;9,10E+01;91E0_sf;Binnen & Buiten;30;342,2;0;0;0
+Vlaanderen;2;Habitatsubtype;Versie 3;9,10E+01;91E0_va;Binnen & Buiten;51;66,2011139;11,77;5,84;22,27
+Vlaanderen;2;Habitatsubtype;Versie 3;9,10E+01;91E0_vc;Binnen & Buiten;25;23,90073295;5,41;1,2;21,2
+Vlaanderen;2;Habitatsubtype;Versie 3;9,10E+01;91E0_vm;Binnen & Buiten;38;41,61718505;9,61;3,62;23,16
+Vlaanderen;2;Habitatsubtype;Versie 3;9,10E+01;91E0_vn;Binnen & Buiten;39;43,0960588;0;0;0
+Vlaanderen;2;Habitatsubtype;Versie 3;9,10E+01;91E0_vo;Binnen & Buiten;19;19,8127711;0;0;0
+Vlaanderen;2;Habitattype;Versie 3;9,10E+01;"91E0_sf; 91E0_vc; 91E0_vm; 91E0_vo; 91E0_va; 91E0_vn";Binnen & Buiten;202;536,8278618;2,44;1,35;4,35
+Vlaanderen;2;SBZH;Versie 3;9,10E+01;"91E0_sf; 91E0_vc; 91E0_vo; 91E0_vm; 91E0_va; 91E0_vn";Binnen;126;393,0738161;3,33;1,84;5,94
+Vlaanderen;2;SBZH;Versie 3;9,10E+01;"91E0_sf; 91E0_vm; 91E0_vc; 91E0_vo; 91E0_vn; 91E0_va";Buiten;76;143,7540457;0;0;0
+Vlaanderen Atlantisch;2;Habitattype;Versie 2.0;9120;9120;Binnen & Buiten;263;254,2755842;29,53;24,28;35,38
+Vlaanderen Atlantisch;2;SBZH;Versie 2.0;9120;9120;Binnen;142;133,61;53,24;44,91;61,39
+Vlaanderen Atlantisch;2;SBZH;Versie 2.0;9120;9120;Buiten;121;120,6655842;3,28;1,22;8,54
+Vlaanderen Atlantisch;2;Habitattype;Versie 3;9120;9120;Binnen & Buiten;263;254,2755842;24,84;19,94;30,49
+Vlaanderen Atlantisch;2;SBZH;Versie 3;9120;9120;Binnen;142;133,61;44,32;36,25;52,7
+Vlaanderen Atlantisch;2;SBZH;Versie 3;9120;9120;Buiten;121;120,6655842;3,28;1,22;8,54
+Vlaanderen Atlantisch;2;Habitattype;Versie 2.0;9130;9130;Binnen & Buiten;38;114,4871183;12,04;5,86;23,11
+Vlaanderen Atlantisch;2;SBZH;Versie 2.0;9130;9130;Binnen;29;28,23;48,81;31,26;66,66
+Vlaanderen Atlantisch;2;SBZH;Versie 2.0;9130;9130;Buiten;9;86,25711828;0;0;0
+Vlaanderen Atlantisch;2;Habitattype;Versie 3;9130;9130;Binnen & Buiten;38;114,4871183;14,66;7,38;27,01
+Vlaanderen Atlantisch;2;SBZH;Versie 3;9130;9130;Binnen;29;28,23;59,44;40,86;75,66
+Vlaanderen Atlantisch;2;SBZH;Versie 3;9130;9130;Buiten;9;86,25711828;0;0;0
+Vlaanderen Atlantisch;2;Habitattype;Versie 2.0;9160;9160;Binnen & Buiten;44;43,01770819;22;12,1;36,63
+Vlaanderen Atlantisch;2;SBZH;Versie 2.0;9160;9160;Binnen;26;25,26509715;37,46;21,16;57,21
+Vlaanderen Atlantisch;2;SBZH;Versie 2.0;9160;9160;Buiten;18;17,75261104;0;0;0
+Vlaanderen Atlantisch;2;Habitattype;Versie 3;9160;9160;Binnen & Buiten;44;43,01770819;17,35;8,78;31,42
+Vlaanderen Atlantisch;2;SBZH;Versie 3;9160;9160;Binnen;26;25,26509715;29,55;15,24;49,46
+Vlaanderen Atlantisch;2;SBZH;Versie 3;9160;9160;Buiten;18;17,75261104;0;0;0
+Vlaanderen Atlantisch;2;Habitattype;Versie 2.0;9190;9190;Binnen & Buiten;59;60,83143536;4,93;1,58;14,36
+Vlaanderen Atlantisch;2;SBZH;Versie 2.0;9190;9190;Binnen;31;28,95868163;10,36;3,36;27,78
+Vlaanderen Atlantisch;2;SBZH;Versie 2.0;9190;9190;Buiten;28;31,87275373;0;0;0
+Vlaanderen Atlantisch;2;Habitattype;Versie 3;9190;9190;Binnen & Buiten;59;60,83143536;7,11;2,65;17,71
+Vlaanderen Atlantisch;2;SBZH;Versie 3;9190;9190;Binnen;31;28,95868163;10,36;3,36;27,78
+Vlaanderen Atlantisch;2;SBZH;Versie 3;9190;9190;Buiten;28;31,87275373;4,16;0,57;24,56
+Vlaanderen Atlantisch;2;Habitatsubtype;Versie 2.0;9,10E+01;91E0_sf;Binnen & Buiten;30;342,2;0;0;0
+Vlaanderen Atlantisch;2;Habitatsubtype;Versie 2.0;9,10E+01;91E0_va;Binnen & Buiten;51;66,2011139;14,77;7,91;25,91
+Vlaanderen Atlantisch;2;Habitatsubtype;Versie 2.0;9,10E+01;91E0_vc;Binnen & Buiten;24;22,9085151;45,51;25,94;66,57
+Vlaanderen Atlantisch;2;Habitatsubtype;Versie 2.0;9,10E+01;91E0_vm;Binnen & Buiten;38;41,61718505;14,58;6,62;29,13
+Vlaanderen Atlantisch;2;Habitatsubtype;Versie 2.0;9,10E+01;91E0_vn;Binnen & Buiten;39;43,0960588;0;0;0
+Vlaanderen Atlantisch;2;Habitatsubtype;Versie 2.0;9,10E+01;91E0_vo;Binnen & Buiten;19;19,8127711;0;0;0
+Vlaanderen Atlantisch;2;Habitattype;Versie 2.0;9,10E+01;"91E0_sf; 91E0_vc; 91E0_vm; 91E0_vo; 91E0_va; 91E0_vn";Binnen & Buiten;201;535,8356439;4,9;3,09;7,7
+Vlaanderen Atlantisch;2;SBZH;Versie 2.0;9,10E+01;"91E0_sf; 91E0_vc; 91E0_vo; 91E0_vm; 91E0_va; 91E0_vn";Binnen;126;393,0738161;5,37;3,28;8,66
+Vlaanderen Atlantisch;2;SBZH;Versie 2.0;9,10E+01;"91E0_sf; 91E0_vm; 91E0_vc; 91E0_vo; 91E0_vn; 91E0_va";Buiten;75;142,7618279;3,63;1,13;11,01
+Vlaanderen Atlantisch;2;Habitatsubtype;Versie 3;9,10E+01;91E0_sf;Binnen & Buiten;30;342,2;0;0;0
+Vlaanderen Atlantisch;2;Habitatsubtype;Versie 3;9,10E+01;91E0_va;Binnen & Buiten;51;66,2011139;11,77;5,84;22,27
+Vlaanderen Atlantisch;2;Habitatsubtype;Versie 3;9,10E+01;91E0_vc;Binnen & Buiten;24;22,9085151;5,64;1,25;22,01
+Vlaanderen Atlantisch;2;Habitatsubtype;Versie 3;9,10E+01;91E0_vm;Binnen & Buiten;38;41,61718505;9,61;3,62;23,16
+Vlaanderen Atlantisch;2;Habitatsubtype;Versie 3;9,10E+01;91E0_vn;Binnen & Buiten;39;43,0960588;0;0;0
+Vlaanderen Atlantisch;2;Habitatsubtype;Versie 3;9,10E+01;91E0_vo;Binnen & Buiten;19;19,8127711;0;0;0
+Vlaanderen Atlantisch;2;Habitattype;Versie 3;9,10E+01;"91E0_sf; 91E0_vc; 91E0_vm; 91E0_vo; 91E0_va; 91E0_vn";Binnen & Buiten;201;535,8356439;2,44;1,36;4,36
+Vlaanderen Atlantisch;2;SBZH;Versie 3;9,10E+01;"91E0_sf; 91E0_vc; 91E0_vo; 91E0_vm; 91E0_va; 91E0_vn";Binnen;126;393,0738161;3,33;1,84;5,94
+Vlaanderen Atlantisch;2;SBZH;Versie 3;9,10E+01;"91E0_sf; 91E0_vm; 91E0_vc; 91E0_vo; 91E0_vn; 91E0_va";Buiten;75;142,7618279;0;0;0
