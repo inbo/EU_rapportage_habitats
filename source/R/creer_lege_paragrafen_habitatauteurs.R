@@ -4,7 +4,10 @@ library(rprojroot)
 
 for (id in c("zilt", "kustduin", "water", "heide", "gras", "veen",
              "rots", "bos")) {
-  for (paragraaf in c("inleiding", "areaal", "oppervlakte")) {
+  for (paragraaf in c("inleiding", "areaal", "oppervlakte",
+                      "regionale_toestand", "drukken_bedreigingen",
+                      "instandhoudingsmaatregelen", "toekomstperspectieven",
+                      "conclusies")) {
     rmarkdown::render(
       find_root_file("source/r/creer_lege_paragrafen_habitatauteurs.Rmd",
                      criterion = has_file("EU_rapportage_habitats.Rproj")),
@@ -35,30 +38,30 @@ for (id in c("zilt", "kustduin", "water", "heide", "gras", "veen",
 }
 
 # upload de md bestanden naar google drive om te editen.
-library(trackdown)
-
-for (id in c("zilt", "kustduin", "water", "heide", "gras", "veen",
-             "rots", "bos")) {
-  for (paragraaf in c("inleiding", "areaal")) {
-    trackdown::upload_file(file =
-                             find_root_file(
-                               "source/bookdown/habitatauteurs_paragrafen",
-                               paste0(id, "_", paragraaf, '.md'),
-                               criterion =
-                                 has_file("EU_rapportage_habitats.Rproj")),
-                           gpath = 'https://drive.google.com/drive/u/0/folders/10PRntwyguTWSQcTyl61ouXJ3KGmZPYuX'
-                            )
-  }
-}
-
-trackdown::upload_file(file =
-                         find_root_file(
-                           "source/bookdown/1_Inleiding.Rmd",
-                           criterion =
-                             has_file("EU_rapportage_habitats.Rproj"))
-)
-trackdown::upload_file(file = "99_test.Rmd",
-                       gpath = "trackdown")
-
-trackdown::download_file(file = "99_test.Rmd",
-                       gpath = "trackdown")
+# library(trackdown)
+#
+# for (id in c("zilt", "kustduin", "water", "heide", "gras", "veen",
+#              "rots", "bos")) {
+#   for (paragraaf in c("inleiding", "areaal")) {
+#     trackdown::upload_file(file =
+#                              find_root_file(
+#                                "source/bookdown/habitatauteurs_paragrafen",
+#                                paste0(id, "_", paragraaf, '.md'),
+#                                criterion =
+#                                  has_file("EU_rapportage_habitats.Rproj")),
+#                            gpath = 'https://drive.google.com/drive/u/0/folders/10PRntwyguTWSQcTyl61ouXJ3KGmZPYuX'
+#                             )
+#   }
+# }
+#
+# trackdown::upload_file(file =
+#                          find_root_file(
+#                            "source/bookdown/1_Inleiding.Rmd",
+#                            criterion =
+#                              has_file("EU_rapportage_habitats.Rproj"))
+# )
+# trackdown::upload_file(file = "99_test.Rmd",
+#                        gpath = "trackdown")
+#
+# trackdown::download_file(file = "99_test.Rmd",
+#                        gpath = "trackdown")

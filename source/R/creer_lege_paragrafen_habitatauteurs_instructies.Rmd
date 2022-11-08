@@ -7,13 +7,26 @@ output:
 ---
 
 ```{r setup, include=FALSE}
+library(rprojroot)
+library(tidyverse)
+library(n2khab)
 knitr::opts_chunk$set(echo = TRUE)
+source(find_root_file(
+    "source/r/get_habitats.r",
+    criterion = has_file("EU_rapportage_habitats.Rproj")))
+hab <- habitattypes %>%
+  filter(typelevel == "main_type") %>%
+  filter(!(main_type %in% c('9110', '9150', '1110') |
+             str_detect(main_type, "rbb")),
+         id == params$id) %>%
+  select(main_type, `type_name`,
+         `type_shortname`) 
 ```
 
 
 In ieder van de documenten schrijf je een stuk tekst dat bij het desbetreffende hoofdstuk, de figuur of tabel hoort. 
 
-Indien je tekst in *italics* wil schrijven, doe je dat door voor en na dit stuk tekst een '\*'asterisk'\*' te zetten. Voor bold tekst, zet je twee '\*\*'asterisken'\*\*' voor en na je stuk tekst.
+Indien je tekst in *italics* wil schrijven, doe je dat door voor en na dit stuk tekst een '\*'asterisk'\*' te zetten. Voor **bold** tekst, zet je twee '\*\*'asterisken'\*\*' voor en na je stuk tekst dat je vet gedrukt wil zien in het rapport.
 
 Je kan ook refereren naar de verschillende tabellen en figuren in het originele document, dat doe je zo:
 
@@ -22,3 +35,11 @@ Je kan ook refereren naar de verschillende tabellen en figuren in het originele 
 - Schrijf tabel \\@ref(tab:`r params$id`-areaal-tabel) om te refereren naar de tabel met trend, FRR en eindconclusie(s) voor het areaal.
 - Schrijf figuur \\@ref(fig:`r params$id`-oppervlakte-bars) om te refereren naar de bar chart figuren.
 - Schrijf tabel \\@ref(tab:`r params$id`-oppervlakte) om te refereren naar de tabel beste oppervlaktewaarde (totaal voor Vlaanderen), aandeel in het SBZ-H-netwerk, trendrichting, relatie tot de referentieoppervlakte voor regionaal gunstige toestand (FRA) en eindconclusie voor habitatoppervlakte
+- Schrijf figuur \\@ref(fig:`r params$id`-aandeelGunstigeStaat) om te refereren naar de figuur met error bars voor het oppervlakteaandeel in gunstige staat in Vlaanderen (habitattypes op de y-as).
+- Schrijf tabel \\@ref(tab:`r params$id`-specifiekestructuren-eindoordeel) om te refereren naar de tabel met eindoordeel en trend voor specifieke structuren en functies.
+- Schrijf figuur \\@ref(fig:lsvifiguur**XXXX**) om te refereren naar de LSVI figuur voor habitat nummer **XXXX** (mogelijke opties voor **XXXX** zijn `r as.character(hab$main_type)`). Mogelijks is er niet voor ieder habitattype een figuur voor het oppervlakteaandeel in gunstige staat per indicator (bij gebrek aan data).
+- Schrijf tabel \\@ref(tab:`r params$id`-drukken-bedreigingen) om te refereren naar de tabel met drukken en bedreigingen.
+- Schrijf tabel \\@ref(tab:`r params$id`-ihm) om te refereren naar de tabel met instandhoudingsmaatregelen.
+- Schrijf tabel \\@ref(tab:`r params$id`-toekomst) om te refereren naar de tabel met toekomstperspectieven.
+- Schrijf tabel \\@ref(tab:`r params$id`-conclusie) om te refereren naar de samenvattende tabel van de conclusies per criterium en einduitspraak over de algemene toestand en trend van de instandhouding per habitattype.
+
