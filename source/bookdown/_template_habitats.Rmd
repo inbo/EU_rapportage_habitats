@@ -167,6 +167,10 @@ data_struc_func_final %>% filter(hab == this_hab) %>%
   column_spec(3, width = "4cm") 
 ```
 
+```{r, child = find_root_file("habitatauteurs_paragrafen", sprintf("%s_regionale_toestand.md", this_hab), criterion = has_file("bookdown.Rproj"))}
+```
+
+
 ### Beoordeling LSVI indicator
 
 ```{r {{id}}-voorbereidinghabitatkwaliteit2, warning = FALSE, message = FALSE }
@@ -206,7 +210,7 @@ if (nrow(data_lsvi) > 0) {
 }
 ```
 
-```{r}
+```{r, eval=(nrow(data_lsvi) > 0)}
 for (i in 1:length(habs)) {
   if (!file.exists(sprintf("figuren/lsvi/{{id}}-LSVI-fig%s.pdf", habs[i]))) { 
     ggsave(plot = plots[[i]],
@@ -216,11 +220,11 @@ for (i in 1:length(habs)) {
 }
 ```
 
-```{r results='asis'}
-
+```{r results='asis', eval=(nrow(data_lsvi) > 0)}
+captions <- sprintf("Oppervlakteaandeel (schatting o.b.v. steekproef, met 95percent-betrouwbaarheidsinterval) in gunstige staat per indicator voor %s. De verticale onderbroken lijn geeft de grenswaarde voor gunstige toestand weer.", habs)
 cat(
 sprintf(
-"\\begin{figure}\n\n{\\centering \\includegraphics{figuren/lsvi/{{id}}-LSVI-fig%s.pdf}}\n\n\\caption{%s}(\\#fig:lsvifiguur%s)\n\n\\end{figure}", habs, "test", habs),
+"\\begin{figure}\n\n{\\centering \\includegraphics{figuren/lsvi/{{id}}-LSVI-fig%s.pdf}}\n\n\\caption{%s}(\\#fig:lsvifiguur%s)\n\n\\end{figure}", habs, captions, habs),
   sep = "\n"
 )
 
@@ -232,7 +236,7 @@ sprintf(
 
 ## Drukken en bedreigingen
 
-```{r {{id}}-drukkenbedreigingen, echo = FALSE, message = FALSE}
+```{r {{id}}-drukken-bedreigingen, echo = FALSE, message = FALSE}
 data_pt %>% filter(hab == this_hab) %>%
   mutate(pt = as.factor(pt),
          code = as.factor(code)) %>% {. ->> b } %>%#make sure they are alphabetically
@@ -260,9 +264,13 @@ c %>%
             color = "white")
 ```
 
-
+```{r, child = find_root_file("habitatauteurs_paragrafen", sprintf("%s_drukken_bedreigingen.md", this_hab), criterion = has_file("bookdown.Rproj"))}
+```
 
 ## Instandhoudingsmaatregelen
+
+
+
 ```{r {{id}}-ihm, echo = FALSE, message = FALSE}
 data_ihm %>% filter(hab == this_hab) %>%
   mutate(value = "x") %>% {. ->> b } %>%#make sure they are alphabetically
@@ -282,7 +290,8 @@ c %>%
   column_spec(2:(1 + length(unique(b$code))), width = "1cm") 
 ```
 
-
+```{r, child = find_root_file("habitatauteurs_paragrafen", sprintf("%s_instandhoudingsmaatregelen.md", this_hab), criterion = has_file("bookdown.Rproj"))}
+```
 
 ## Toekomstperspectieven
 ```{r {{id}}-toekomst, echo = FALSE, message = FALSE}
@@ -308,6 +317,8 @@ data_toekomst %>% filter(hab == this_hab) %>%#make sure they are alphabetically
   kable_styling(latex_options = c("striped")) 
 ```
 
+```{r, child = find_root_file("habitatauteurs_paragrafen", sprintf("%s_toekomstperspectieven.md", this_hab), criterion = has_file("bookdown.Rproj"))}
+```
 
 ## Conclusies
 
@@ -328,6 +339,8 @@ data_conclusie %>% filter(hab == this_hab) %>%
                       "Toekomst-\nperspectieven","Eind-\nconclusie", "Totaal-\ntrend"),
         caption = "Samenvattende tabel van de conclusies per criterium en einduitspraak over de algemene toestand en trend van de instandhouding per habitattype.") %>%
   kable_styling(latex_options = c("striped")) %>%
-  column_spec(2:7, width = "1.5cm") 
+  column_spec(2:6, width = "1.7cm") %>%
+  column_spec(7, width = "2cm") 
 ```
-
+```{r, child = find_root_file("habitatauteurs_paragrafen", sprintf("%s_conclusies.md", this_hab), criterion = has_file("bookdown.Rproj"))}
+```
