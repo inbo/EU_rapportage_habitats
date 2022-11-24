@@ -21,6 +21,7 @@
 .Rapp.history
 .Renviron
 .Rhistory
+.Rprofile
 .Rproj.user
 .Rproj.user/
 .Ruserdata
@@ -32,3 +33,4 @@ docs
 vignettes/*.html
 vignettes/*.pdf
 source/bookdown/figuren/
+source/output/
