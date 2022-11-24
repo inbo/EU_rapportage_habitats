@@ -1,5 +1,5 @@
 
-# lees fiches
+#####################----------- lees fiches---------------#####################
 if (file.exists(find_root_file("data/processed/habitat_fiches.Rdata",
                                criterion =
                                has_file("EU_rapportage_habitats.Rproj")))) {
@@ -283,6 +283,7 @@ data_conclusie <- do.call(rbind, data_conclusie)
 files_habitatkwaliteit <- list.files(
   path = find_root_file("data/raw/BijlageHabitatKwal",
                         criterion = has_file("EU_rapportage_habitats.Rproj")))
+
 #-----------lees sheets over status van de habitats in vlaanderen--------------#
 #Sommige habitats hebben een grenswaarde van 90, anderen van 75: 10 ha totale oppervlakte als grens voor toepassing van de 90%-regel (Paelinckx et al 2019)
 Grenswaarde <- data_area %>% filter(type == "area") %>%
@@ -343,10 +344,30 @@ data_aandeelgunstig <- lapply(files_habitatkwaliteit[
   FUN = function(x){lees_aandeelgunstig(x)})
 data_aandeelgunstig <- do.call(rbind, data_aandeelgunstig)
 
+#-indicatorscores van de criteria ‘Typische soorten’ en ‘Ruimtelijke samenhang’-#
+#Bijlage 4 uit https://pureportal.inbo.be/nl/publications/regionale-staat-van-instandhouding-voor-de-habitattypen-van-de-ha
+data_soorten_samenhang <-
+  readxl::read_xlsx(
+    path = find_root_file("data/raw/Bijlage 4_Habitatkwaliteit 2019 en 2013 + belang indicatoren.xlsx",
+                          criterion = has_file("EU_rapportage_habitats.Rproj")),
+    sheet = "Kwaliteit habitattypen",
+    skip = 1) %>%
+  rename(Criterium = `Criterium...2`, Indicator = `Indicator...3`,
+         Belang = `Belangrijk - Zeer Belangrijk`,
+         Toestand = ends_with("Oosterlynck")) %>%
+  dplyr::select(Habitat_Code, Criterium, Indicator, Belang, Toestand) %>%
+  filter(Criterium %in% c("Typische soorten",
+                          "Ruimtelijke samenhang (niveau VL)",
+                          "Ruimtelijke samenhang (niveau VL)")) %>%
+  mutate(Toestand = ifelse(is.na(Toestand), "n.v.t.", Toestand))
 
+
+
+
+############---------------BEWAAR DE DATA---------------------------############
 save(data_aandeelgunstig, data_statushabitat, data_area, data_areaal,
      data_conclusie, data_ihm, data_pt,
-     data_struc_func_final, data_toekomst,
+     data_struc_func_final, data_toekomst, data_soorten_samenhang,
      file = find_root_file("data/processed/habitatdata.Rdata",
                            criterion =
                              has_file("EU_rapportage_habitats.Rproj")))
