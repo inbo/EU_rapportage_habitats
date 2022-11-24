@@ -21,9 +21,14 @@ title <- ttl[[this_hab]]
 # mapdata2 <- data[[str_c(this_hab, "2016")]]$valid_eng
 # refdata2 <- as.factor(points_id$lu16oord_eng)
 # maparea <- area[[this_hab]]
+
+
+#Habitatauteurs
+
+
 ```
 # `r title`
-Auteurs: 
+Auteurs: `r auteurs %>%filter(Code == this_hab) %>%pull(Auteurs)`
 
 Dit hoofdstuk behandelt de habitattyppen in tabel \@ref(tab:{{id}}-habitattypen).
 ```{r {{id}}-habitattypen, message = FALSE}
