@@ -1,5 +1,8 @@
 library(protocolhelper)
+library(tidyverse)
+library(rprojroot)
 library(parsermd)
+
 
 paragrafen <- c("Inleiding", "Areaal", "Oppervlakte", "Regionale_toestand",
                 "Drukken_bedreigingen", "Instandhoudingsmaatregelen",
