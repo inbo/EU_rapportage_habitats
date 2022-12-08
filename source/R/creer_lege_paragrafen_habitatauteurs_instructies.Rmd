@@ -36,6 +36,7 @@ Je kan ook refereren naar de verschillende tabellen en figuren in het originele 
 - Schrijf figuur \\@ref(fig:`r params$id`-oppervlakte-bars) om te refereren naar de bar chart figuren.
 - Schrijf tabel \\@ref(tab:`r params$id`-oppervlakte) om te refereren naar de tabel beste oppervlaktewaarde (totaal voor Vlaanderen), aandeel in het SBZ-H-netwerk, trendrichting, relatie tot de referentieoppervlakte voor regionaal gunstige toestand (FRA) en eindconclusie voor habitatoppervlakte
 - Schrijf figuur \\@ref(fig:`r params$id`-aandeelGunstigeStaat) om te refereren naar de figuur met error bars voor het oppervlakteaandeel in gunstige staat in Vlaanderen (habitattypes op de y-as).
+- Schrijf tabel \\@ref(tab:`r params$id`-specifiekestructuren-soorten-samenhang) om te refereren naar de tabel met een overzicht van de indicatorscores van de criteria ‘Typische soorten’ en ‘Ruimtelijke samenhang’, met vermelding van hun belang.
 - Schrijf tabel \\@ref(tab:`r params$id`-specifiekestructuren-eindoordeel) om te refereren naar de tabel met eindoordeel en trend voor specifieke structuren en functies.
 - Schrijf figuur \\@ref(fig:lsvifiguur**XXXX**) om te refereren naar de LSVI figuur voor habitat nummer **XXXX** (mogelijke opties voor **XXXX** zijn `r as.character(hab$main_type)`). Mogelijks is er niet voor ieder habitattype een figuur voor het oppervlakteaandeel in gunstige staat per indicator (bij gebrek aan data).
 - Schrijf tabel \\@ref(tab:`r params$id`-drukken-bedreigingen) om te refereren naar de tabel met drukken en bedreigingen.

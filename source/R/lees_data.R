@@ -354,20 +354,34 @@ data_soorten_samenhang <-
     skip = 1) %>%
   rename(Criterium = `Criterium...2`, Indicator = `Indicator...3`,
          Belang = `Belangrijk - Zeer Belangrijk`,
-         Toestand = ends_with("Oosterlynck")) %>%
-  dplyr::select(Habitat_Code, Criterium, Indicator, Belang, Toestand) %>%
+         Toestand = ends_with("Oosterlynck"),
+         Habitattype = `Habitat_Code`) %>%
+  dplyr::select(Habitattype, Criterium, Indicator, Belang, Toestand) %>%
   filter(Criterium %in% c("Typische soorten",
                           "Ruimtelijke samenhang (niveau VL)",
                           "Ruimtelijke samenhang (niveau VL)")) %>%
   mutate(Toestand = ifelse(is.na(Toestand), "n.v.t.", Toestand))
 
 
-
+#------------------data oppervlaktes voor bar charts---------------------------#
+data_opp2018 <- readxl::read_xlsx(
+    path = find_root_file("data/raw/oppervlaktes.xlsx",
+                          criterion = has_file("EU_rapportage_habitats.Rproj")),
+    sheet = "2018",
+    skip = 1) %>%
+  mutate(jaar = 2018)
+data_opp <- readxl::read_xlsx(
+  path = find_root_file("data/raw/oppervlaktes.xlsx",
+                        criterion = has_file("EU_rapportage_habitats.Rproj")),
+  sheet = "2012",
+  skip = 1) %>%
+  mutate(jaar = 2012) %>%
+  rbind(data_opp2018)
 
 ############---------------BEWAAR DE DATA---------------------------############
 save(data_aandeelgunstig, data_statushabitat, data_area, data_areaal,
      data_conclusie, data_ihm, data_pt,
-     data_struc_func_final, data_toekomst, data_soorten_samenhang,
+     data_struc_func_final, data_toekomst, data_soorten_samenhang, data_opp,
      file = find_root_file("data/processed/habitatdata.Rdata",
                            criterion =
                              has_file("EU_rapportage_habitats.Rproj")))
