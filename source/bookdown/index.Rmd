@@ -2,36 +2,50 @@
 title: Regionale staat van instandhouding voor de habitattypen van de habitatrichtlijn.
 subtitle: Rapportageperiode 2019 - 2024
 author: 
-  - firstname: Jeroen
-    name: Vanden Borre
+  - name: 
+      given: Jeroen
+      family: Vanden Borre
     email: jeroen.vandenborre@inbo.be
     orcid: 0000-0002-0153-7243
-  - firstname: Toon
-    name: Westra
+    affiliation: Research Institute for Nature and Forest (INBO)
+    corresponding: TRUE
+  - name: 
+      given: Toon
+      family: Westra
     email: toon.westra@inbo.be
     orcid: 0000-0003-2478-9459
-  - firstname: Raïsa
-    name: Carmen
+    affiliation: Research Institute for Nature and Forest (INBO)
+  - name: 
+      given: Raïsa
+      family: Carmen
     email: raisa.carmen@inbo.be
     orcid: 0000-0003-1025-8702
-shortauthor:  Vanden Borre, J., Westra, T., Carmen, R.
-corresponding: jeroen.vandenborre@inbo.be
+    affiliation: Research Institute for Nature and Forest (INBO)
 reviewer:
-  - firstname: Maurice
-    name: Hoffmann
+  - name: 
+      given: Maurice
+      family: Hoffmann
     email: maurice.hoffmann@inbo.be
     orcid: 0000-0003-1306-8672
-  - firstname: Marc
-    name: Pollet
+    affiliation: Research Institute for Nature and Forest (INBO)
+  - name: 
+      given: Marc
+      family: Pollet
     email: marc.pollet@inbo.be
     orcid: 0000-0001-5198-5928
+    affiliation: Research Institute for Nature and Forest (INBO)
 year: 2022
 cover_photo: 
 cover_description: 
 cover: 
-doi: doi.org/10.21436/inbor.83938581
+doi: 10.21436/inbor.83938581
 reportnr: 22
 depotnr: D/2022/3241/240
+funder: Research Institute for Nature and Forest (INBO) 
+rightsholder: Research Institute for Nature and Forest (INBO)
+community: inbo
+keywords: rapportage; habitats
+publication_type: report
 embargo: 2022-10-04
 style: INBO
 lang: nl
@@ -109,6 +123,7 @@ library(rgdal)
 library(rprojroot)
 library(sf)
 library(n2khab)
+conflicted::conflicts_prefer(dplyr::filter)
 source(find_root_file(
     "source/r/get_habitats.r",
     criterion = has_file("EU_rapportage_habitats.Rproj")))
