@@ -14,8 +14,7 @@ auteurs <- readxl::read_excel(
 
 sapply(
   c("zilt", "kustduin", "water", "heide", "gras", "veen", 
-                       "rots", 
-    "bos"),
+    "rots", "bos"),
   function(id) {
     knit_expand("_template_habitats.Rmd", id = id)
   }

@@ -119,7 +119,7 @@ if (interactive()) {
 }
 library(patchwork)
 library(readxl)
-library(rgdal)
+#library(rgdal)
 library(rprojroot)
 library(sf)
 library(n2khab)
