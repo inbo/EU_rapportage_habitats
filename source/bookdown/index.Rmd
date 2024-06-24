@@ -125,20 +125,20 @@ library(sf)
 library(n2khab)
 conflicted::conflicts_prefer(dplyr::filter)
 source(find_root_file(
-    "source/r/get_habitats.r",
+    "source/R/get_habitats.R",
     criterion = has_file("EU_rapportage_habitats.Rproj")))
 source(find_root_file(
-    "source/r/Vertalingen.r",
+    "source/R/Vertalingen.R",
     criterion = has_file("EU_rapportage_habitats.Rproj")))
 source(find_root_file(
-    "source/r/plot_habitatkwaliteit.r",
+    "source/R/plot_habitatkwaliteit.R",
     criterion = has_file("EU_rapportage_habitats.Rproj")))
 
 ```
 ```{r load_data, include = FALSE, eval = !file.exists(find_root_file("data/processed/habitatdata.Rdata", criterion = has_file("EU_rapportage_habitats.Rproj")))}
 #lees alle data
 source(find_root_file(
-    "source/r/lees_data.r",
+    "source/R/lees_data.R",
     criterion = has_file("EU_rapportage_habitats.Rproj")))
 ```
 ```{r load_data2, include = FALSE, eval = file.exists(find_root_file("data/processed/habitatdata.Rdata", criterion = has_file("EU_rapportage_habitats.Rproj")))}
