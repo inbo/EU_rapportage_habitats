@@ -133,7 +133,7 @@ source(find_root_file(
 source(find_root_file(
     "source/R/plot_habitatkwaliteit.R",
     criterion = has_file("EU_rapportage_habitats.Rproj")))
-
+dir.create("figuren/lsvi", showWarnings = FALSE, recursive = TRUE)
 ```
 ```{r load_data, include = FALSE, eval = !file.exists(find_root_file("data/processed/habitatdata.Rdata", criterion = has_file("EU_rapportage_habitats.Rproj")))}
 #lees alle data
