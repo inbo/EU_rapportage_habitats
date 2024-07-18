@@ -34,11 +34,13 @@ vignettes/*.html
 vignettes/*.pdf
 source/bookdown/figuren/
 source/output/
-data/raw/*.docx
-data/raw/*.zip
-data/raw/Bijlage 4*
 data/raw/Oppervlaktes.xlsx
 data/processed/
 data/*.RDS
 source/bookdown/habitatauteurs_paragrafen/*.Rmd
 test/
+*.RData
+*.Rdata
+*.docx
+*.tex
+*.zip
