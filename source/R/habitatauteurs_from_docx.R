@@ -1,14 +1,16 @@
 library(protocolhelper)
 library(tidyverse)
 library(rprojroot)
-library(parsermd)
+library(parsermd) #convert_docx_to_rmd
 
 
 paragrafen <- c("Inleiding", "Areaal", "Oppervlakte", "Regionale_toestand",
                 "Drukken_bedreigingen", "Instandhoudingsmaatregelen",
                 "Toekomstperspectieven", "Conclusies") # dit moet hetzelde zijn als de namen van de hoofdstukken, ook
-for (hoofdstuk in c("zilt", "kustduin", "water", "heide", "gras", "veen",
-                   "rots", "bos")) {
+
+hoofdstukken <- c("zilt", "kustduin", "water", "heide",
+                  "gras", "veen", "rots", "bos")
+for (hoofdstuk in ) {
   convert_docx_to_rmd(
     from = find_root_file("data/raw",
                         sprintf("%s.docx", hoofdstuk),

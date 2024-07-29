@@ -87,7 +87,7 @@ extract_pressuresthreats <- function(x, hab){
 
 #----------------------------------------------------------
 
-extract_areaal <- function(x,hab){
+extract_acreage <- function(x,hab){
 
   extract_function <- function(data){
     trend <-
@@ -184,7 +184,7 @@ extract_ihm <- function(x, hab){
 
 #-------------------------------------------------------------------------------
 
-extract_toekomst <- function(x, hab){
+extract_future <- function(x, hab){
 
   extract_function <- function(data){
     areaal <-
@@ -209,7 +209,7 @@ extract_toekomst <- function(x, hab){
 
 #-------------------------------------------------------------------------------
 
-extract_conclusie <- function(x, hab){
+extract_conclusion <- function(x, hab){
 
   extract_function <- function(data){
     areaal <-
@@ -236,5 +236,52 @@ extract_conclusie <- function(x, hab){
     return(conclusie)
   }
   map_dfr(x, extract_function)
+}
+
+#---------------------------------------------------------------------------------
+
+read_status_habitat <- function(x, limit_values, dir) {
+  data <- read_csv2(file.path(dir, x)) |>
+    mutate(Habitattype = as.character(Habitattype),
+           Habitatsubtype = as.character(Habitattype),
+           Periode = as.character(Periode),
+           naam =  str_replace(string = x,
+                               replacement = "\\1",
+                               pattern = "StatusHabitat_(.+)\\.csv")) |>
+    left_join(limit_values, by = join_by(Habitattype == code)) |>
+    mutate(Uitspraak = case_when(is.na(AandeelGunstig_LLCI) ~ "Onbekend",
+                                 AandeelGunstig_LLCI > Grenswaarde ~ "Gunstig",
+                                 AandeelGunstig_ULCI < Grenswaarde ~ "Ongunstig",
+                                 TRUE ~ "Onbekend")) |>
+    dplyr::select(naam, Schaal, Periode, TypeResultaat, Versie, Habitattype,
+                  Habitatsubtype,	SBZH,	nObs,	sumWeights,
+                  AandeelGunstig, AandeelGunstig_LLCI,
+                  AandeelGunstig_ULCI, Grenswaarde, Uitspraak)
+  data
+}
+
+#---------------------------------------------------------------------------------
+
+
+read_fraction_favorable <- function(x, limit_values, dir) {
+  data <- read_csv2(file.path(dir, x)) |>
+    mutate(Habitattype = as.character(Habitattype),
+           Habitatsubtype = as.character(Habitattype),
+           Periode = as.character(Periode),
+           naam =  str_replace(string = x,
+                               replacement = "\\1",
+                               pattern = ".*Vlaanderen_(.+)\\.csv.*"),
+           Versiebis =
+             ifelse(Versie == "Versie 2.0",
+                    "T'jollyn et al. 2009 (LSVI versie 2)",
+                    ifelse(Versie == "Versie 3",
+                           "Oosterlynck et al. 2018 (LSVI versie 3)",
+                           "CHECK VERSIE!!"))) |>
+    left_join(limit_values, join_by(Habitattype == code)) |>
+    mutate(Uitspraak = case_when(is.na(AandeelGunstig_LLCI) ~ "Onbekend",
+                                 AandeelGunstig_LLCI > Grenswaarde ~ "Gunstig",
+                                 AandeelGunstig_ULCI < Grenswaarde ~ "Ongunstig",
+                                 TRUE ~ "Onbekend"))
+  data
 }
 

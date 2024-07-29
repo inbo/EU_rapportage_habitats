@@ -4,6 +4,7 @@ library(rprojroot)
 
 
 # maak instructies met de handles voor alle figuren en tabellen
+# via params kan je params velden in de yaml header van de Rmd invullen
 for (id in c("zilt", "kustduin", "water", "heide", "gras", "veen",
              "rots", "bos")) {
   for (paragraaf in c("instructies")) {

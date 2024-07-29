@@ -35,6 +35,7 @@ vignettes/*.pdf
 source/bookdown/figuren/
 source/output/
 data/raw/Oppervlaktes.xlsx
+data/raw/BijlageHabitatKwal/*.xlsx
 data/processed/
 data/*.RDS
 source/bookdown/habitatauteurs_paragrafen/*.Rmd
