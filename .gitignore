@@ -39,6 +39,9 @@ data/raw/BijlageHabitatKwal/*.xlsx
 data/processed/
 data/*.RDS
 source/bookdown/habitatauteurs_paragrafen/*.Rmd
+source/bookdown/habitatauteurs_paragrafen/*.md
+source/bookdown/habitatauteurs_paragrafen/*.pdf
+
 test/
 =======
 *.RData

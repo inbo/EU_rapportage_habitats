@@ -12,8 +12,9 @@ library(tidyverse)
 library(n2khab)
 knitr::opts_chunk$set(echo = TRUE)
 source(find_root_file(
-    "source/r/get_habitats.r",
+    "source/r/_functions_lees_data.r",
     criterion = has_file("EU_rapportage_habitats.Rproj")))
+habitattypes <- get_habitattypes()
 hab <- habitattypes %>%
   filter(typelevel == "main_type") %>%
   filter(!(main_type %in% c('9110', '9150', '1110') |
