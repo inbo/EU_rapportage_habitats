@@ -7,14 +7,37 @@ library(googlesheets4)
 library(assertthat)
 library(rprojroot)
 library(n2khab)
+library(glue)
+library(readxl)
+library(jsonlite)
 source('source/R/_functions_lees_data.R')
+
+
+######################################
+## Indien alle data al gegenereerd is
+######################################
+
+#alternatief 1: lees bestaande binary
+load("data/processed/habitat_fiches.Rdata") #indien reeds doorlopen
+load("data/processed/habitatdata.Rdata")
+
+#alternatief 2: lees uit gegenereerde csvs
+data_fiches <- read_csv_to_data_fiches_list(base_path = "data/processed/fiches_")
+read_habitatdata(base_path = "data/processed/", starts_with = "data_")
+
+
+
+#EINDE ROUTINE (het vervolg van het script genereert deze bestanden)
+
+#----------------------------------------------------------------------------
 
 ################################
 ## Lees fiches
 ################################
 
-load("data/processed/habitat_fiches.Rdata") #indien reeds doorlopen
 
+
+#lees rechtstreeks uit de bronbestanden
 fiches_source <- list(
   zilt     = "1XcuXlEbK3DS9RcgOTMPVtxNYmYciONJJpAjKG9yOakw",
   kustduin = "1kKKeHgyIGBsMclqxYUyCtMBxeMS7xFRmUH-YYpKV5gI",
@@ -26,31 +49,31 @@ fiches_source <- list(
   bos      = "1pT_HN9m6iX0rMPvUpjSUI31Cii2cVmLNLedPrLy-Q78")
 
 
-habitattypes <- get_habitattypes()
+data_habitattypes <- get_habitattypes()
 fch_zilt     <- read_form(fiches_source[["zilt"]],
                           chapter = "zilt",
-                          habitattypes = habitattypes)
+                          habitattypes = data_habitattypes)
 fch_kustduin <- read_form(fiches_source[["kustduin"]],
                           chapter = "kustduin",
-                          habitattypes = habitattypes)
+                          habitattypes = data_habitattypes)
 fch_water    <- read_form(fiches_source[["water"]],
                           chapter = "water",
-                          habitattypes = habitattypes)
+                          habitattypes = data_habitattypes)
 fch_heide    <- read_form(fiches_source[["heide"]],
                           chapter = "heide",
-                          habitattypes = habitattypes)
+                          habitattypes = data_habitattypes)
 fch_gras     <- read_form(fiches_source[["gras"]],
                           chapter = "gras",
-                          habitattypes = habitattypes)
+                          habitattypes = data_habitattypes)
 fch_veen     <- read_form(fiches_source[["veen"]],
                           chapter = "veen",
-                          habitattypes = habitattypes)
+                          habitattypes = data_habitattypes)
 fch_rots     <- read_form(fiches_source[["rots"]],
                           chapter = "rots",
-                          habitattypes = habitattypes)
+                          habitattypes = data_habitattypes)
 fch_bos      <- read_form(fiches_source[["bos"]],
                           chapter = "bos",
-                          habitattypes = habitattypes)
+                          habitattypes = data_habitattypes)
 
 #---------------------source data------------------------------------#
 
@@ -177,12 +200,29 @@ data_opp <- readxl::read_xlsx(
 
 ############---------------BEWAAR DE DATA---------------------------############
 
-save(data_aandeelgunstig, data_statushabitat, data_area, data_areaal,
-     data_conclusie, data_ihm, data_pt,
-     data_struc_func_final, data_toekomst, data_soorten_samenhang, data_opp,
-     file = "data/processed/habitatdata.Rdata")
+# > binary objects
 
-save(data_fiches,
-     file = "data/processed/habitat_fiches.Rdata")
+object_names <- c(
+  "data_habitattypes", "data_aandeelgunstig", "data_statushabitat", "data_area",
+  "data_areaal","data_conclusie", "data_ihm", "data_pt",
+  "data_struc_func_final", "data_toekomst", "data_soorten_samenhang", "data_opp")
+
+save(list = object_names, file = "data/processed/habitatdata.Rdata")
+save(data_fiches, file = "data/processed/habitat_fiches.Rdata")
+
+# > Text files
+
+prc_path <- "data/processed/"
+object_list <- mget(object_names)
+
+#verwerkte data
+walk2(
+  .x = object_list,
+  .y = names(object_list),
+  .f = ~ write_excel_csv2(.x, file = glue("{prc_path}{.y}.csv"))
+)
+
+#fiche inhoud
+write_data_fiches_to_csv(data_fiches, base_path = paste0(prc_path, "fiches_"))
 
 

@@ -285,3 +285,59 @@ read_fraction_favorable <- function(x, limit_values, dir) {
   data
 }
 
+#-----------------------------------------------------------------------
+
+#write 3-level list to csv
+
+write_data_fiches_to_csv <- function(x, base_path = "output/") {
+  walk(names(x), \(top_level_name) {
+    top_level_item <- x[[top_level_name]]
+
+    walk(names(top_level_item), \(second_level_name) {
+      df <- top_level_item[[second_level_name]]
+      file_path <- glue::glue("{base_path}{top_level_name}_{second_level_name}.csv")
+      write_excel_csv2(df, file_path)
+    })
+  })
+  # Write structure information
+  structure_info <- map_depth(x, 2, function(x) class(x)[1])
+  write_json(structure_info, glue::glue("{base_path}structure__info.json"))
+}
+
+#----------------------------------------------------------------------------
+
+#read 3-level list back to r object
+
+read_csv_to_data_fiches_list <- function(base_path = "output/") {
+  # Read structure information
+  structure_info <- read_json(glue::glue("{base_path}structure__info.json"))
+  reconstructed_list <-
+    map(names(structure_info), \(top_level_name) {
+      second_level <- structure_info[[top_level_name]]
+      map(names(second_level), \(second_level_name) {
+        file_path <- glue::glue("{base_path}{top_level_name}_{second_level_name}.csv")
+        df <- read_csv2(file_path)
+        df
+      }) %>% set_names(names(second_level))
+    }) %>% set_names(names(structure_info))
+
+  reconstructed_list
+}
+
+
+#---------------------------------------------------------------------------
+
+read_habitatdata <- function(base_path = "output/", starts_with = "data_") {
+
+  #list csv files
+  csv_files <- list.files(path = base_path,
+                          pattern = glue("^{starts_with}.*\\.csv$"),
+                          full.names = TRUE)
+
+  walk(csv_files, \(path) {
+    object_name <- path |> basename() |> str_remove("\\.csv$")
+    data <- read_csv2(path)
+    assign(object_name, data, envir = .GlobalEnv)
+  })
+}
+
