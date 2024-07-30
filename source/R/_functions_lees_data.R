@@ -19,9 +19,9 @@ get_habitattypes <- function () {
 
 #-------------------------------------------------------
 
-# Lees de fiche-inhoud in
+# Lees de fiche-inhoud in (2019)
 
-read_form <- function(link = "google-sheet-id",
+read_form_2019 <- function(link = "google-sheet-id",
                       chapter = 'for example: zilt',
                       habitattypes = "output from get_habitattypes"){
 
@@ -60,6 +60,51 @@ read_form <- function(link = "google-sheet-id",
   names(data) <- hab
   return(data)
 }
+
+#-------------------------------------------------------
+
+# Lees de fiche-inhoud in (2024)
+read_form <- function(link = "google-sheet-id",
+                      chapter = 'for example: zilt',
+                       habitattypes = "output from get_habitattypes"){
+
+  #helper function
+  read_form_page_cols <- function(code) {
+    d <- read_sheet(ss = link,
+                    sheet = as.character(code),
+                    range = "A:E",
+                    col_types = "ccccc")
+    columns <- colnames(d)
+    d <- d |>
+      rename(colnames = columns[1],
+             flanders = columns[2],
+             timing = columns[3],
+             scope = columns[4],
+             influence = columns[5]) |>
+      filter(!is.na(colnames) | !is.na(flanders) | !is.na(timing) |
+               !is.na(timing) | !is.na(influence))
+    return(d)
+  }
+
+  sheet_names <- sheet_names(ss = link)
+  hab <- habitattypes |>
+    filter(id == chapter &
+             !(main_type %in% c('1110') | #bostypes 9110 en 9150 terug toegevoegd
+                 str_detect(main_type, "rbb"))) |>  #meerdere fiches
+    dplyr::select(main_type) |>
+    unique() |>
+    mutate(main_type = factor(main_type))
+  hab <- hab$main_type
+  assert_that(sum(!(hab %in% sheet_names)) == 0,
+              msg = sprintf("Sommige habitatcodes van %s zijn niet in de fiche",
+                            chapter))
+
+  #loop through pages in sheet
+  data <- lapply(hab, FUN = read_form_page_cols)
+  names(data) <- hab
+  return(data)
+}
+
 
 #----------------------------------------------------------
 

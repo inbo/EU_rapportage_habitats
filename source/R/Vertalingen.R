@@ -24,8 +24,10 @@ status_translate <- data.frame(
 toekomst_translate <- data.frame(
   toekomsteng = c("Unknown", "Bad", "Poor", "Good"),
   toekomstnl = c("onbekend", "slecht", "matig", "goed"),
-  toekomstkleur = c(vlaanderen_palette(9)[2], traffic_palette(9)[2],
-                    traffic_palette(9)[5], traffic_palette(9)[8]))
+  toekomstkleur = c(INBOtheme::vlaanderen_palette(9)[2],
+                    INBOtheme::traffic_palette(9)[2],
+                    INBOtheme::traffic_palette(9)[5],
+                    INBOtheme::traffic_palette(9)[8]))
 
 frr_translate <- data.frame(
   symbool = c("≈", ">", ">>", "<", "<<"),
