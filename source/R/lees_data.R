@@ -10,7 +10,9 @@ library(n2khab)
 library(glue)
 library(readxl)
 library(jsonlite)
-source('source/R/_functions_lees_data.R')
+projroot <- rprojroot::find_root("EU_rapportage_habitats.Rproj")
+source(file.path(projroot,'source/R/_functions_lees_data.R'))
+source(file.path(projroot,'source/R/vertalingen.R'))
 
 
 ######################################
@@ -18,12 +20,18 @@ source('source/R/_functions_lees_data.R')
 ######################################
 
 #alternatief 1: lees bestaande binary
-load("data/processed/habitat_fiches.Rdata") #indien reeds doorlopen
-load("data/processed/habitatdata.Rdata")
+
+load(file.path(projroot, "data/processed/habitat_fiches.Rdata"))
+load(file.path(projroot, "data/processed/habitatdata.Rdata"))
 
 #alternatief 2: lees uit gegenereerde csvs
-data_fiches <- read_csv_to_data_fiches_list(base_path = "data/processed/fiches_")
-read_habitatdata(base_path = "data/processed/", starts_with = "data_")
+data_fiches <-
+  read_csv_to_data_fiches_list(
+  base_path = file.path(projroot,"data/processed/fiches_"))
+
+read_habitatdata(
+  base_path = file.path(projroot,"data/processed"),
+  starts_with = "data_")
 
 
 
@@ -39,6 +47,7 @@ read_habitatdata(base_path = "data/processed/", starts_with = "data_")
 
 #lees rechtstreeks uit de bronbestanden
 fiches_source <- list(
+  #2019
   zilt     = "1XcuXlEbK3DS9RcgOTMPVtxNYmYciONJJpAjKG9yOakw",
   kustduin = "1kKKeHgyIGBsMclqxYUyCtMBxeMS7xFRmUH-YYpKV5gI",
   water    = "1eG3aE4e0G9jl4ooW1pL9tPKyO9xAjXppZ1m8HCFBcjU",
@@ -48,32 +57,44 @@ fiches_source <- list(
   rots     = "1iAocy2Gu5WDSXtSyhiNEVjYVmcdiHXqnzk2IdtYom5o",
   bos      = "1pT_HN9m6iX0rMPvUpjSUI31Cii2cVmLNLedPrLy-Q78")
 
+fiches_source_2024 <- list(
+  template = "12L9jqKClJQaz7nETqnHIpbsG1PmLtg1JiFMjQT1H81o"
+)
+
 
 data_habitattypes <- get_habitattypes()
-fch_zilt     <- read_form(fiches_source[["zilt"]],
+
+#2019
+fch_zilt     <- read_form_2019(fiches_source[["zilt"]],
                           chapter = "zilt",
                           habitattypes = data_habitattypes)
-fch_kustduin <- read_form(fiches_source[["kustduin"]],
+fch_kustduin <- read_form_2019(fiches_source[["kustduin"]],
                           chapter = "kustduin",
                           habitattypes = data_habitattypes)
-fch_water    <- read_form(fiches_source[["water"]],
+fch_water    <- read_form_2019(fiches_source[["water"]],
                           chapter = "water",
                           habitattypes = data_habitattypes)
-fch_heide    <- read_form(fiches_source[["heide"]],
+fch_heide    <- read_form_2019(fiches_source[["heide"]],
                           chapter = "heide",
                           habitattypes = data_habitattypes)
-fch_gras     <- read_form(fiches_source[["gras"]],
+fch_gras     <- read_form_2019(fiches_source[["gras"]],
                           chapter = "gras",
                           habitattypes = data_habitattypes)
-fch_veen     <- read_form(fiches_source[["veen"]],
+fch_veen     <- read_form_2019(fiches_source[["veen"]],
                           chapter = "veen",
                           habitattypes = data_habitattypes)
-fch_rots     <- read_form(fiches_source[["rots"]],
+fch_rots     <- read_form_2019(fiches_source[["rots"]],
                           chapter = "rots",
                           habitattypes = data_habitattypes)
-fch_bos      <- read_form(fiches_source[["bos"]],
+fch_bos      <- read_form_2019(fiches_source[["bos"]],
                           chapter = "bos",
                           habitattypes = data_habitattypes)
+
+#2024
+fch_template <- read_form(fiches_source_2024[["template"]],
+                          chapter = "zilt",
+                          habitattypes = data_habitattypes)
+
 
 #---------------------source data------------------------------------#
 
@@ -185,6 +206,13 @@ data_soorten_samenhang <-
 
 #------------------data oppervlaktes voor bar charts---------------------------#
 
+# ACTIVATE WHEN AVAILABLE
+# data_opp2024 <- readxl::read_xlsx(
+#   "data/raw/oppervlaktes.xlsx",
+#   sheet = "2024",
+#   skip = 1) %>%
+#   mutate(jaar = 2024)
+
 data_opp2018 <- readxl::read_xlsx(
   "data/raw/oppervlaktes.xlsx",
   sheet = "2018",
@@ -196,7 +224,7 @@ data_opp <- readxl::read_xlsx(
   sheet = "2012",
   skip = 1) %>%
   mutate(jaar = 2012) |>
-  bind_rows(data_opp2018)
+  bind_rows(data_opp2018) #|> bind_rows(data_opp2024)
 
 ############---------------BEWAAR DE DATA---------------------------############
 
