@@ -1,0 +1,9 @@
+Code Hoofdstuk Auteurs
+zilt "Zilte habitattypen en estuarium (11xx en 13xx)" "Bart Vandevoorde, Frederic Van Lierop, Indra Jacobs, Desiré Paelinckx"
+kustduin "Kustduinhabitattypen (21xx)" "Sam Provoost"
+water "Waterhabitattypen (31xx en 32xx)" "Luc Denys, An Leyssen, Jo Packet, Kevin Scheers, Vincent Smeekens, Bart Vandevoorde"
+heide "Heide- en struweelhabitattypen (23xx, 40xx en 5130)" "Steven De Saeger"
+gras "Graslandhabitattypen (6120, 62xx, 64xx en 6510" "Jeroen Vanden Borre, Maud Raman, Patrik Oosterlynck, Steven De Saeger, Rémar Erens, Indra Jacobs, Desiré Paelinckx"
+veen "Veenhabitattypen (71xx en 72xx)" "Patrik Oosterlynck, Toon Westra, Jan Wouters, Rémar Erens, Indra Jacobs, Jorgen Op De Beeck, Pieter Hendrickx, Desiré Paelinckx"
+rots "Rotsachtige habitattypen en grotten (8310)" "Steven De Saeger, Mike Lahaye"
+bos "Boshabitattypen (91xx)" "Arno Thomaes, Luc De Keersmaeker, Kris Vandekerkhove"

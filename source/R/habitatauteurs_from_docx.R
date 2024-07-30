@@ -2,11 +2,35 @@ library(protocolhelper)
 library(tidyverse)
 library(rprojroot)
 library(parsermd)
+library(googledrive)
 
-
+#download the docx files from google drive
+folder <- "https://drive.google.com/drive/folders/10cZDtfWFMglGF4ICvBzv6HXkfsqT3eP1"
+folder_id <- drive_get(as_id(folder))
+files <- drive_ls(folder_id)
+#check whether the receiving folder exists
+if (!file.exists(
+  find_root_file("data/raw",
+                 criterion = has_file("EU_rapportage_habitats.Rproj")))) {
+  dir.create(find_root_file("data/raw",
+                            criterion =
+                              has_file("EU_rapportage_habitats.Rproj")))
+}
+#download all files in the local folder
+for (i in seq_along(files$name)) {
+  drive_download(
+    as_id(files$id[i]),
+    path =
+      find_root_file("data/raw", files$name[i],
+                     criterion = has_file("EU_rapportage_habitats.Rproj")),
+    overwrite = TRUE
+  )
+  }
+# de paragrafen moeten hetzelfde zijn als de namen van de hoofdstukken in de
+# docx bestanden
 paragrafen <- c("Inleiding", "Areaal", "Oppervlakte", "Regionale_toestand",
                 "Drukken_bedreigingen", "Instandhoudingsmaatregelen",
-                "Toekomstperspectieven", "Conclusies") # dit moet hetzelde zijn als de namen van de hoofdstukken, ook
+                "Toekomstperspectieven", "Conclusies")
 for (hoofdstuk in c("zilt", "kustduin", "water", "heide", "gras", "veen",
                    "rots", "bos")) {
   convert_docx_to_rmd(
@@ -37,4 +61,11 @@ for (hoofdstuk in c("zilt", "kustduin", "water", "heide", "gras", "veen",
                                     criterion =
                                       has_file("EU_rapportage_habitats.Rproj")))
     }
-  }
+}
+#save habitatauteurs to txt file to be able to put it on github.
+auteurs <- readxl::read_excel(
+  path = find_root_file("data/raw/habitatauteurs.xlsx",
+                        criterion = has_file("EU_rapportage_habitats.Rproj")))
+write_delim(auteurs,
+            find_root_file("data/raw/habitatauteurs.txt",
+                           criterion = has_file("EU_rapportage_habitats.Rproj")))
