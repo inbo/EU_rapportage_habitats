@@ -1,3 +1,8 @@
+\listoftables
+
+\listoffigures
+
+
 ```{r references, results = "asis", echo = FALSE}
 # insert the references at this position
 # set appendix = FALSE, when the report has no appendix

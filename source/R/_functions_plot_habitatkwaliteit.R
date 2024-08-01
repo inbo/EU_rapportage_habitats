@@ -1,6 +1,7 @@
 plot_statushabitat <- function(data, grenswaarde){
   plot1 <- data %>%
-    filter(Grenswaarde == grenswaarde) %>%
+    filter(Grenswaarde == grenswaarde,
+           Versie == "Versie 3") %>%
     ggplot(aes(x = Habitattype,
                y = AandeelGunstig,
                ymin = AandeelGunstig_LLCI,
@@ -8,7 +9,7 @@ plot_statushabitat <- function(data, grenswaarde){
                colour = Uitspraak)) +
     geom_point(size = 3) +
     geom_errorbar(width = 0.2) +
-    facet_wrap(~ Versie) +
+    #facet_wrap(~ Versie) +
     coord_flip() +
     labs(x = "Habitattype",
          colour = "Beoordeling",
@@ -21,12 +22,14 @@ plot_statushabitat <- function(data, grenswaarde){
                size = 0.5,
                linetype = "dashed",
                alpha = 0.5)  +
-    theme_inbo(base_size = 9) +
+    INBOtheme::theme_inbo(base_size = 9) +
     theme(legend.position = "bottom") +
     scale_y_continuous(breaks = c(0 , 25, 50, 75, 100),
                        limits = c(0,100))
   return(plot1)
 }
+
+#----------------------------------------------------------------------------
 
 plot_indicatoren <- function(data, habitat){
   data %>%
@@ -40,7 +43,8 @@ plot_indicatoren <- function(data, habitat){
     ) +
     geom_point() +
     geom_errorbar(width = 0.2, size = 0.5) +
-    facet_grid(Criterium ~ Versiebis, scales = "free_y", space = "free_y") +
+    #facet_grid(Criterium ~ Versiebis, scales = "free_y", space = "free_y") +
+    facet_grid(Criterium ~ ., scales = "free_y", space = "free_y") +
     coord_flip() +
     labs(x = "Indicator",
          colour = "Beoordeling",
@@ -56,7 +60,7 @@ plot_indicatoren <- function(data, habitat){
                size = 0.5,
                linetype = "dashed",
                alpha = 0.5)  +
-    theme_inbo(base_size = 9) +
+    INBOtheme::theme_inbo(base_size = 9) +
     theme(legend.position = "bottom",
           #        legend.text.align = 0,
           #        legend.box = "vertical",

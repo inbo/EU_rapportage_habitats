@@ -1,9 +1,11 @@
 #Voor ieder van de habitattypes en voor ieder van de paragrafen wordt er een md file gecreerd. Enkel de referenties naar tabellen en figuren uit het hoofdstuk worden getoond.
 library(tidyverse)
 library(rprojroot)
+source("source/R/_functions_lees_data.R")
 
 
 # maak instructies met de handles voor alle figuren en tabellen
+# via params kan je params velden in de yaml header van de Rmd invullen
 for (id in c("zilt", "kustduin", "water", "heide", "gras", "veen",
              "rots", "bos")) {
   for (paragraaf in c("instructies")) {

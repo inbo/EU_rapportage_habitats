@@ -1,355 +1,196 @@
+# Voorbereiding (projectdir = workdir)
 
-#####################----------- lees fiches---------------#####################
-if (file.exists(find_root_file("data/processed/habitat_fiches.Rdata",
-                               criterion =
-                               has_file("EU_rapportage_habitats.Rproj")))) {
-load(find_root_file("data/processed/habitat_fiches.Rdata",
-                    criterion = has_file("EU_rapportage_habitats.Rproj")))
-} else{
-  library(googlesheets4)
-  library(assertthat)
-  fiches <- list(zilt = "https://docs.google.com/spreadsheets/d/1XcuXlEbK3DS9RcgOTMPVtxNYmYciONJJpAjKG9yOakw/edit#gid=860716314",
-             kustduin = "https://docs.google.com/spreadsheets/d/1kKKeHgyIGBsMclqxYUyCtMBxeMS7xFRmUH-YYpKV5gI/edit#gid=744463599",
-             water = "https://docs.google.com/spreadsheets/d/1eG3aE4e0G9jl4ooW1pL9tPKyO9xAjXppZ1m8HCFBcjU/edit#gid=744463599",
-             heide = "https://docs.google.com/spreadsheets/d/1EeNeXdG_nlR1-kh5yW1_ehp66lKHYrOeDN8ffZ3QgKk/edit#gid=744463599",
-             gras = "https://docs.google.com/spreadsheets/d/1uuJbioyRB8uyaljOIRnzl6QtayzXD2GZ7Tmk-jUZwnI/edit#gid=744463599",
-             veen = "https://docs.google.com/spreadsheets/d/1dysOn9O_yPer4xFP7Szx89gKv-BqVbiGuMWXtYihlnw/edit?usp=drive_web&ouid=115300910729380317098",
-             rots = "https://docs.google.com/spreadsheets/d/1iAocy2Gu5WDSXtSyhiNEVjYVmcdiHXqnzk2IdtYom5o/edit?usp=sharing",
-             bos = "https://docs.google.com/spreadsheets/d/1pT_HN9m6iX0rMPvUpjSUI31Cii2cVmLNLedPrLy-Q78/edit#gid=744463599")
+## Laad benodigde functionaliteiten
 
-  lees_fiche <- function(link = "https://docs.google.com/spreadsheets/d/1XcuXlEbK3DS9RcgOTMPVtxNYmYciONJJpAjKG9yOakw/edit#gid=860716314",
-                       hoofdstuk = "zilt"){
-    sheet_names <- sheet_names(ss = link)
-    hab <- habitattypes %>% filter(id == hoofdstuk &
-                                   !(main_type %in% c('9110', '9150', '1110') |
-                                       str_detect(main_type, "rbb"))) %>%
-      dplyr::select(main_type) %>%
-      unique() %>%
-      mutate(main_type = factor(main_type))
-    hab <- hab$main_type
-    assert_that(sum(!(hab %in% sheet_names)) == 0,
-              msg = sprintf("Sommige habitatcodes van %s zijn niet in de fiche",
-                            hoofdstuk))
-    data <- lapply(hab, FUN = function(code){
-      d <- read_sheet(ss = link, sheet = as.character(code), range = "A:C",
-               col_types = "ccc")
-      columns <- colnames(d)
-      d <- d %>% rename(colnames = columns[1],
-             flanders = columns[2],
-             extra = columns[3]) %>%
-        filter(!is.na(colnames) | !is.na(flanders) | !is.na(extra))
-      return(d)
-    })
-    return(data)
-  }
+library(tidyverse)
+library(googlesheets4)
+library(assertthat)
+library(rprojroot)
+library(n2khab)
+library(glue)
+library(readxl)
+library(jsonlite)
+projroot <- rprojroot::find_root("EU_rapportage_habitats.Rproj")
+source(file.path(projroot,'source/R/_functions_lees_data.R'))
+source(file.path(projroot,'source/R/vertalingen.R'))
 
-  data_fiches <- fiches %>% map(function(x)
-    lees_fiche(link = x,
-             hoofdstuk = names(fiches)[fiches == x]))#this only works if each habitat has a unique link
-}
+
+######################################
+## Indien alle data al gegenereerd is
+######################################
+
+#alternatief 1: lees bestaande binary
+
+load(file.path(projroot, "data/processed/habitat_fiches.Rdata"))
+load(file.path(projroot, "data/processed/habitatdata.Rdata"))
+
+#alternatief 2: lees uit gegenereerde csvs
+data_fiches <-
+  read_csv_to_data_fiches_list(
+  base_path = file.path(projroot,"data/processed/fiches_"))
+
+read_habitatdata(
+  base_path = file.path(projroot,"data/processed"),
+  starts_with = "data_")
+
+
+
+#EINDE ROUTINE (het vervolg van het script genereert deze bestanden)
+
+#----------------------------------------------------------------------------
+
+################################
+## Lees fiches
+################################
+
+
+
+#lees rechtstreeks uit de bronbestanden
+fiches_source <- list(
+  #2019
+  zilt     = "1XcuXlEbK3DS9RcgOTMPVtxNYmYciONJJpAjKG9yOakw",
+  kustduin = "1kKKeHgyIGBsMclqxYUyCtMBxeMS7xFRmUH-YYpKV5gI",
+  water    = "1eG3aE4e0G9jl4ooW1pL9tPKyO9xAjXppZ1m8HCFBcjU",
+  heide    = "1EeNeXdG_nlR1-kh5yW1_ehp66lKHYrOeDN8ffZ3QgKk",
+  gras     = "1uuJbioyRB8uyaljOIRnzl6QtayzXD2GZ7Tmk-jUZwnI",
+  veen     = "1dysOn9O_yPer4xFP7Szx89gKv-BqVbiGuMWXtYihlnw",
+  rots     = "1iAocy2Gu5WDSXtSyhiNEVjYVmcdiHXqnzk2IdtYom5o",
+  bos      = "1pT_HN9m6iX0rMPvUpjSUI31Cii2cVmLNLedPrLy-Q78")
+
+fiches_source_2024 <- list(
+  template = "12L9jqKClJQaz7nETqnHIpbsG1PmLtg1JiFMjQT1H81o"
+)
+
+
+data_habitattypes <- get_habitattypes()
+
+#2019
+fch_zilt     <- read_form_2019(fiches_source[["zilt"]],
+                          chapter = "zilt",
+                          habitattypes = data_habitattypes)
+fch_kustduin <- read_form_2019(fiches_source[["kustduin"]],
+                          chapter = "kustduin",
+                          habitattypes = data_habitattypes)
+fch_water    <- read_form_2019(fiches_source[["water"]],
+                          chapter = "water",
+                          habitattypes = data_habitattypes)
+fch_heide    <- read_form_2019(fiches_source[["heide"]],
+                          chapter = "heide",
+                          habitattypes = data_habitattypes)
+fch_gras     <- read_form_2019(fiches_source[["gras"]],
+                          chapter = "gras",
+                          habitattypes = data_habitattypes)
+fch_veen     <- read_form_2019(fiches_source[["veen"]],
+                          chapter = "veen",
+                          habitattypes = data_habitattypes)
+fch_rots     <- read_form_2019(fiches_source[["rots"]],
+                          chapter = "rots",
+                          habitattypes = data_habitattypes)
+fch_bos      <- read_form_2019(fiches_source[["bos"]],
+                          chapter = "bos",
+                          habitattypes = data_habitattypes)
+
+#2024
+fch_template <- read_form(fiches_source_2024[["template"]],
+                          chapter = "zilt",
+                          habitattypes = data_habitattypes)
+
+
+#---------------------source data------------------------------------#
+
+data_fiches <- ls(pattern = "^fch_", envir = .GlobalEnv) %>%
+  mget(envir = .GlobalEnv) %>%
+  setNames(sub("^fch_", "", names(.)))
 
 #---------------------Pressures and Threats------------------------------------#
-extract_pressuresthreats <- function(x, hab){
-  data_pt <- lapply(x, FUN = function(data){
-    pressuresstart <-
-      which(data$colnames == "7.1 Characterisation of pressures")
-    threathsstart <- which(data$colnames == "7.1 Characterisation of threats")
-    pressuressend <- threathsstart - 1
-    threathsend <- which(
-      data$colnames == "7.2 Sources of information, only for High (optional)"
-      ) - 1
-    code <- as.character(data[which(data$colnames == "1.2 Habitat code"),
-                              "flanders"])
-    pressuresthreats <- data.frame(
-      pt = c(rep('pressure', threathsstart - pressuresstart),
-             rep('threath', threathsend - threathsstart + 1)),
-      type = unname(unlist(data[pressuresstart:threathsend, 'flanders'])),
-      ranking = unname(unlist(data[pressuresstart:threathsend, 'extra'])),
-      hab = hab,
-      code = code)
-    return(pressuresthreats)
-  })
-  data_pt <- do.call(rbind, data_pt)
-  return(data_pt)
-}
+#map_dfr is superseded en zou kunnen vervangen worden door map2 en list_rbind
 
-data_pt <- lapply(1:length(data_fiches),
-                  FUN = function(i){
-                    x <- data_fiches[[i]]
-                    hab <- names(data_fiches)[i]
-                  return(extract_pressuresthreats(x, hab))})
-data_pt <- do.call(rbind, data_pt)
+data_pt <-
+  map2_dfr(data_fiches, names(data_fiches),
+       ~ extract_pressuresthreats(.x, hab = .y))
 
-#-----------------------------AREAAL-------------------------------------------#
-extract_areaal <- function(x,hab){
-  data_areaal <- lapply(x, FUN = function(data){
-    trend <-
-      which(data$colnames ==
-              "4.3 Short-term trend Direction = only genuine change")
-    frr <- which(
-      data$colnames ==
-        "4.10 Favourable reference range b) operators or c) x unknown")
-    conclusion <- which(data$colnames == "10.1 Range")
-    code <- as.character(data[which(data$colnames == "1.2 Habitat code"),
-                              "flanders"])
-    areaal <- data.frame(
-      type = c("trend", "frr", "conclusie"),
-      value = unname(unlist(data[c(trend, frr, conclusion), 'flanders'])),
-      hab = hab,
-      code = code) #%>%
-      #mutate(value = ifelse(value == "≈", "\U2245", value))
-    return(areaal)
-  })
-  data_areaal <- do.call(rbind, data_areaal)
-  return(data_areaal)
-}
+#-----------------------------Areaal-------------------------------------------#
 
-data_areaal <- lapply(1:length(data_fiches),
-                  FUN = function(i){
-                    x <- data_fiches[[i]]
-                    hab <- names(data_fiches)[i]
-                    return(extract_areaal(x, hab))})
-data_areaal <- do.call(rbind, data_areaal)
+data_acreage <- map2_dfr(data_fiches, names(data_fiches),
+                ~extract_acreage(.x, hab = .y))
 
 #-----------------------------Oppervlakte--------------------------------------#
-extract_area <- function(x,hab){
-  data_area <- lapply(x, FUN = function(data){
-    bestarea <- which(data$colnames ==
-                        "5.2 Surface area: Best Single Value in km²")
-    bestareasbz <- which(data$colnames ==
-                           "11.1 Best Single Value in km²")
-    trend <-
-      which(data$colnames ==
-              "5.6 Short-term trend Direction = only genuine change")
-    fra <- which(
-      data$colnames ==
-        "5.13 Favourable reference area b) operators or c) x unknown")
-    conclusion <- which(data$colnames == "10.2 Area")
-    code <- as.character(data[which(data$colnames == "1.2 Habitat code"),
-                              "flanders"])
-    area <- data.frame(
-      type = c("area", "areasbz", "trend", "fra", "conclusie"),
-      value = unname(unlist(data[c(bestarea, bestareasbz, trend, fra,
-                                   conclusion), 'flanders'])),
-      hab = hab,
-      code = code)
-    return(area)
-  })
-  data_area <- do.call(rbind, data_area)
-  return(data_area)
-}
 
-data_area <- lapply(1:length(data_fiches),
-                      FUN = function(i){
-                        x <- data_fiches[[i]]
-                        hab <- names(data_fiches)[i]
-                        return(extract_area(x, hab))})
-data_area <- do.call(rbind, data_area)
+data_area <- map2_dfr(data_fiches, names(data_fiches),
+                        ~extract_area(.x, hab = .y))
 
+#---------------------Specifieke structuren en functies------------------------#
 
-#De meer gedetailleerde data voor de bar charts moet waarschijnlijk eerder uit deze sheet gehaald worden
-# https://docs.google.com/spreadsheets/d/120mvNWUdo6IXTNoKMeyDTK_2l9Atr-cT-sK_rW3jIDc/edit#gid=1041184742
+data_struc_func_final <- map2_dfr(data_fiches, names(data_fiches),
+                                  ~extract_struc_func_final(.x, hab = .y))
 
-#---------------------SPECIFIEKE STRUCTUREN EN FUNCTIES------------------------#
-# figuur 5 en 6: https://drive.google.com/drive/folders/1_eeHq-6oHvLN_BAgvFKjyqhUaJZ4JChF
-# tabel 15: kan ik niet terug vinden
-# table 16
-extract_struc_func_final <- function(x,hab){
-  data_struc_func_final <- lapply(x, FUN = function(data){
-    trend <-
-      which(data$colnames ==
-              "6.4 Short-term trend of habitat area in good condition. Direction = only genuine change")
-    conclusion <- which(
-      data$colnames ==
-        "10.3 Specific structure and  functions (incl. typical species)")
-    code <- as.character(data[which(data$colnames == "1.2 Habitat code"),
-                              "flanders"])
-    struc_func_final <- data.frame(
-      type = c("trend", "Oosterlynckx", "TJollyn"),
-      value = c(unname(unlist(data[c(trend, conclusion), 'flanders'])),
-                unname(unlist(data[conclusion, 'extra']))),
-      hab = hab,
-      code = code)
-    return(struc_func_final)
-  })
-  data_struc_func_final <- do.call(rbind, data_struc_func_final)
-  return(data_struc_func_final)
-}
-
-data_struc_func_final <- lapply(1:length(data_fiches),
-                    FUN = function(i){
-                      x <- data_fiches[[i]]
-                      hab <- names(data_fiches)[i]
-                      return(extract_struc_func_final(x, hab))})
-data_struc_func_final <- do.call(rbind, data_struc_func_final)
 
 #---------------------Instandhoudingsmaatregelen-------------------------------#
-# eventueel hier (https://docs.google.com/spreadsheets/d/1KJgjjwr29wHK06kQH3bipfwVpYnC5whivkLeru2r8ao/edit#gid=552048168)
-# maar beter op uit de fiche te halen mss
-extract_ihm <- function(x, hab){
-  data_ihm <- lapply(x, FUN = function(data){
-    ihmstart <-
-      which(str_detect(data$colnames, "8.5 List of the main conservation measures"))
-    ihmend <- which(str_detect(data$colnames,
-                     "8.6 Additional information")) - 1
-    code <- as.character(data[which(data$colnames == "1.2 Habitat code"),
-                              "flanders"])
-    ihm <- data.frame(
-      ihm = unname(unlist(data[dput(ihmstart:ihmend), 'flanders'])),
-      hab = hab,
-      code = code)
-    return(ihm)
-  })
-  data_ihm <- do.call(rbind, data_ihm)
-  return(data_ihm)
-}
 
-data_ihm <- lapply(1:length(data_fiches),
-                  FUN = function(i){
-                    x <- data_fiches[[i]]
-                    hab <- names(data_fiches)[i]
-                    return(extract_ihm(x, hab))})
-data_ihm <- do.call(rbind, data_ihm)
+data_ihm <-  map2_dfr(data_fiches, names(data_fiches),
+                      ~extract_ihm(.x, hab = .y))
 
 #---------------------------Toekomstperspectieven------------------------------#
-extract_toekomst <- function(x, hab){
-  data_toekomst <- lapply(x, FUN = function(data){
-    areaal <-
-      which(data$colnames == "9.1 Future prospects of a) range")
-    struct <-
-      which(data$colnames == "9.1 Future prospects of c) structure and functions")
-    conclusie <-
-      which(data$colnames == "10.4 Future prospects")
-    oppervlakte <-
-      which(data$colnames == "9.1 Future prospects of b) area")
-    code <- as.character(data[which(data$colnames == "1.2 Habitat code"),
-                              "flanders"])
-    toekomst <- data.frame(
-      type = c("Areaal", "Oppervlakte", "Structuren en functie", "Conclusie"),
-      score = unname(unlist(data[c(areaal, oppervlakte, struct, conclusie), "flanders"])),
-      hab = hab,
-      code = code)
-    return(toekomst)
-  })
-  data_toekomst <- do.call(rbind, data_toekomst)
-  return(data_toekomst)
-}
 
-data_toekomst <- lapply(1:length(data_fiches),
-                   FUN = function(i){
-                     x <- data_fiches[[i]]
-                     hab <- names(data_fiches)[i]
-                     return(extract_toekomst(x, hab))})
-data_toekomst <- do.call(rbind, data_toekomst)
+data_toekomst <- map2_dfr(data_fiches, names(data_fiches),
+                          ~extract_future(.x, hab = .y))
+
 
 #---------------------------------Conclusie------------------------------------#
-extract_conclusie <- function(x, hab){
-  data_conclusie <- lapply(x, FUN = function(data){
-    areaal <-
-      which(data$colnames == "10.1 Range")
-    struct <-
-      which(data$colnames == "10.3 Specific structure and  functions (incl. typical species)")
-    toekomst <-
-      which(data$colnames == "10.4 Future prospects")
-    oppervlakte <-
-      which(data$colnames == "10.2 Area")
-    eindconclusie <-
-      which(data$colnames == "10.5 Overall assessment of Conservation Status")
-    totaaltrend <-
-      which(data$colnames == "10.6 Overall trend in Conservation Status")
-    code <- as.character(data[which(data$colnames == "1.2 Habitat code"),
-                              "flanders"])
-    conclusie <- data.frame(
-      type = c("Areaal", "Oppervlakte", "Structuren en functie",
-               "Toekomstperspectieven", "Eindconclusie", "Totaal-trend"),
-      score = unname(unlist(data[c(areaal, oppervlakte, struct, toekomst,
-                                   eindconclusie, totaaltrend), "flanders"])),
-      hab = hab,
-      code = code)
-    return(conclusie)
-  })
-  data_conclusie <- do.call(rbind, data_conclusie)
-  return(data_conclusie)
-}
 
-data_conclusie <- lapply(1:length(data_fiches),
-                        FUN = function(i){
-                          x <- data_fiches[[i]]
-                          hab <- names(data_fiches)[i]
-                          return(extract_conclusie(x, hab))})
-data_conclusie <- do.call(rbind, data_conclusie)
+data_conclusie <- map2_dfr(data_fiches, names(data_fiches),
+                          ~extract_conclusion(.x, hab = .y))
+
+#==============================================================================
+
+###########################
+#### Habitatkwaliteit
+###########################
+
+
 
 #lees habitatkwaliteit
-files_habitatkwaliteit <- list.files(
-  path = find_root_file("data/raw/BijlageHabitatKwal",
-                        criterion = has_file("EU_rapportage_habitats.Rproj")))
+files_habitatstatus <-
+  list.files(path = "data/raw/BijlageHabitatKwal",
+             pattern = "StatusHabitat*")
+
+files_indicatoren <-
+  list.files(path = "data/raw/BijlageHabitatKwal",
+             pattern = "Indicatoren_AandeelGunstig*")
 
 #-----------lees sheets over status van de habitats in vlaanderen--------------#
+
 #Sommige habitats hebben een grenswaarde van 90, anderen van 75: 10 ha totale oppervlakte als grens voor toepassing van de 90%-regel (Paelinckx et al 2019)
-Grenswaarde <- data_area %>% filter(type == "area") %>%
-  mutate(value = as.numeric(str_replace(value, ',', '.')) * 100, #van vierkante kilometer naar hectare
+grenswaarden <- data_area %>%
+  filter(type == "area") %>%
+  mutate(value = as.numeric(str_replace(value, ',', '.')) * 100, #km²->ha
          Grenswaarde = ifelse(value <= 10, 90, 75)) %>%
   dplyr::select(code, Grenswaarde)
-lees_statushabitat <- function(x){
-  data <- read.csv2(
-    find_root_file(sprintf("data/raw/BijlageHabitatKwal/%s", x),
-                   criterion = has_file("EU_rapportage_habitats.Rproj")),
-    stringsAsFactors = FALSE) %>%
-    mutate(Habitattype = as.character(Habitattype)) %>%
-    left_join(Grenswaarde, by = c('Habitattype' = 'code')) %>%# grenswaarde is 90 voor zeldzame habitattypes die <10ha beslagen
-    mutate(Uitspraak = factor(
-      ifelse(is.na(AandeelGunstig_LLCI), "Onbekend",
-             ifelse(AandeelGunstig_LLCI > Grenswaarde, "Gunstig",
-                    ifelse(AandeelGunstig_ULCI < Grenswaarde,
-                           "Ongunstig", "Onbekend"))))) %>%
-    dplyr::select("Schaal", "Periode", "TypeResultaat", "Versie", "Habitattype",
-                  "Habitatsubtype",	"SBZH",	"nObs",	"sumWeights",
-                  "AandeelGunstig", "AandeelGunstig_LLCI",
-                  "AandeelGunstig_ULCI", "Grenswaarde", "Uitspraak")
-}
 
-data_statushabitat <- lapply(files_habitatkwaliteit[
-  str_detect(files_habitatkwaliteit, regex("StatusHabitat", ignore_case = T))],
-  FUN = function(x){lees_statushabitat(x)}
-)
-data_statushabitat <- do.call(rbind, data_statushabitat)
+
+data_statushabitat <- files_habitatstatus |>
+  map(.f = read_status_habitat,
+      limit_values = grenswaarden,
+      dir = "data/raw/BijlageHabitatKwal")|>
+  list_rbind()
 
 #--lees sheets over het aandeel dat als gunstig wordt beschouwd in Vlaanderen--#
-lees_aandeelgunstig <- function(x){
-  data <- read.csv2(
-    find_root_file(sprintf("data/raw/BijlageHabitatKwal/%s", x),
-                   criterion = has_file("EU_rapportage_habitats.Rproj")),
-    stringsAsFactors = FALSE) %>%
-    mutate(Habitattype = as.character(Habitattype),
-           Versiebis =
-             ifelse(Versie == "Versie 2.0",
-                    "T'jollyn et al. 2009 (LSVI versie 2)",
-                    ifelse(Versie == "Versie 3",
-                           "Oosterlynck et al. 2018 (LSVI versie 3)",
-                           "CHECK VERSIE!!"))) %>%
-    left_join(Grenswaarde, by = c('Habitattype' = 'code')) %>%# grenswaarde is 90 voor zeldzame habitattypes die <10ha beslagen
-    mutate(Uitspraak =
-             factor(ifelse(is.na(AandeelGunstig_LLCI), "Onbekend",
-                           ifelse(AandeelGunstig_LLCI > Grenswaarde, "Gunstig",
-                                  ifelse(AandeelGunstig_ULCI < Grenswaarde,
-                                         "Ongunstig", "Onbekend"))))) %>%
-    dplyr::select("Schaal", "Periode", "TypeResultaat", "Versie", "Habitattype",
-      "Habitatsubtype", "Criterium", "Indicator", "Belang", "SBZH",
-      "nObs", "sumWeights", "AandeelGunstig", "AandeelGunstig_LLCI",
-      "AandeelGunstig_ULCI", "Versiebis", "Grenswaarde", "Uitspraak"
-    )
-}
-data_aandeelgunstig <- lapply(files_habitatkwaliteit[
-  str_detect(files_habitatkwaliteit, "Indicatoren_AandeelGunstigVlaanderen")],
-  FUN = function(x){lees_aandeelgunstig(x)})
-data_aandeelgunstig <- do.call(rbind, data_aandeelgunstig)
+
+data_aandeelgunstig <- files_indicatoren |>
+  map(.f = read_fraction_favorable,
+      limit_values = grenswaarden,
+      dir = "data/raw/BijlageHabitatKwal")|>
+  list_rbind()
+
 
 #-indicatorscores van de criteria ‘Typische soorten’ en ‘Ruimtelijke samenhang’-#
+
 #Bijlage 4 uit https://pureportal.inbo.be/nl/publications/regionale-staat-van-instandhouding-voor-de-habitattypen-van-de-ha
 data_soorten_samenhang <-
   readxl::read_xlsx(
-    path = find_root_file("data/raw/Bijlage 4_Habitatkwaliteit 2019 en 2013 + belang indicatoren.xlsx",
-                          criterion = has_file("EU_rapportage_habitats.Rproj")),
+    path = paste0("data/raw/BijlageHabitatKwal/",
+                  "Bijlage 4_Habitatkwaliteit 2019 en 2013",
+                  " + belang indicatoren.xlsx"),
     sheet = "Kwaliteit habitattypen",
     skip = 1) %>%
   rename(Criterium = `Criterium...2`, Indicator = `Indicator...3`,
@@ -364,30 +205,52 @@ data_soorten_samenhang <-
 
 
 #------------------data oppervlaktes voor bar charts---------------------------#
+
+# ACTIVATE WHEN AVAILABLE
+# data_opp2024 <- readxl::read_xlsx(
+#   "data/raw/oppervlaktes.xlsx",
+#   sheet = "2024",
+#   skip = 1) %>%
+#   mutate(jaar = 2024)
+
 data_opp2018 <- readxl::read_xlsx(
-    path = find_root_file("data/raw/oppervlaktes.xlsx",
-                          criterion = has_file("EU_rapportage_habitats.Rproj")),
-    sheet = "2018",
-    skip = 1) %>%
+  "data/raw/oppervlaktes.xlsx",
+  sheet = "2018",
+  skip = 1) %>%
   mutate(jaar = 2018)
+
 data_opp <- readxl::read_xlsx(
-  path = find_root_file("data/raw/oppervlaktes.xlsx",
-                        criterion = has_file("EU_rapportage_habitats.Rproj")),
+  path = "data/raw/oppervlaktes.xlsx",
   sheet = "2012",
   skip = 1) %>%
-  mutate(jaar = 2012) %>%
-  rbind(data_opp2018)
+  mutate(jaar = 2012) |>
+  bind_rows(data_opp2018) #|> bind_rows(data_opp2024)
 
 ############---------------BEWAAR DE DATA---------------------------############
-save(data_aandeelgunstig, data_statushabitat, data_area, data_areaal,
-     data_conclusie, data_ihm, data_pt,
-     data_struc_func_final, data_toekomst, data_soorten_samenhang, data_opp,
-     file = find_root_file("data/processed/habitatdata.Rdata",
-                           criterion =
-                             has_file("EU_rapportage_habitats.Rproj")))
-save(data_fiches,
-     file = find_root_file("data/processed/habitat_fiches.Rdata",
-                           criterion =
-                             has_file("EU_rapportage_habitats.Rproj")))
+
+# > binary objects
+
+object_names <- c(
+  "data_habitattypes", "data_aandeelgunstig", "data_statushabitat", "data_area",
+  "data_areaal","data_conclusie", "data_ihm", "data_pt",
+  "data_struc_func_final", "data_toekomst", "data_soorten_samenhang", "data_opp")
+
+save(list = object_names, file = "data/processed/habitatdata.Rdata")
+save(data_fiches, file = "data/processed/habitat_fiches.Rdata")
+
+# > Text files
+
+prc_path <- "data/processed/"
+object_list <- mget(object_names)
+
+#verwerkte data
+walk2(
+  .x = object_list,
+  .y = names(object_list),
+  .f = ~ write_excel_csv2(.x, file = glue("{prc_path}{.y}.csv"))
+)
+
+#fiche inhoud
+write_data_fiches_to_csv(data_fiches, base_path = paste0(prc_path, "fiches_"))
 
 

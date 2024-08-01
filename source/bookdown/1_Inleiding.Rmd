@@ -7,8 +7,7 @@ Tabel \@ref(tab:habitattypes) geeft een overzicht van de habitattypes van Bijlag
 ```{r habitattypes}
 habitattypes %>%
   filter(typelevel == "main_type") %>%
-  filter(!(main_type %in% c('9110', '9150', '1110') |
-             str_detect(main_type, "rbb"))) %>%
+  filter(!(main_type %in% excluded_habitats | str_detect(main_type, "rbb"))) %>%
   select(main_type, `type_name`,
          `type_shortname`) %>%
   kable("latex",

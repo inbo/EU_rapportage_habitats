@@ -10,6 +10,7 @@ ttl <- list(zilt = "Zilte habitattypen en estuarium (11xx en 13xx)",
            )
 
 if (interactive()) {
+  #kies random habitat
   this_hab <- sample(c("zilt", "kustduin", "water", "heide", "gras", "veen", 
                        "rots", "bos"), 1)
 } else {
@@ -34,9 +35,8 @@ Dit hoofdstuk behandelt de habitattyppen in tabel \@ref(tab:{{id}}-habitattypen)
 ```{r {{id}}-habitattypen, message = FALSE}
 habitattypes %>%
   filter(typelevel == "main_type") %>%
-  filter(!(main_type %in% c('9110', '9150', '1110') |
-             str_detect(main_type, "rbb")),
-         id == this_hab) %>%
+  filter(!(main_type %in% excluded_habitats | str_detect(main_type, "rbb")),
+        id == this_hab) %>%
   select(main_type, `type_name`,
          `type_shortname`) %>%
   kable(col.names = c("code", "habitatnaam", "verkorte naam"),
@@ -85,8 +85,7 @@ data_areaal %>% filter(hab == this_hab) %>%
 ```{r }
 data_opp %>% filter(HT %in% 
            unlist(habitattypes[habitattypes$id == this_hab, "main_type"]) & 
-           !(HT %in% c('9110', '9150', '1110') |
-             str_detect(HT, "rbb"))) %>%
+           !(HT %in% excluded_habitats | str_detect(HT, "rbb"))) %>%
   dplyr::select(HT, jaar, beste_oppvl_zeker, beste_oppvl_onzeker) %>%
   pivot_longer(cols = c(beste_oppvl_zeker, beste_oppvl_onzeker), names_to = "zekerheid", values_to = "Oppervlakte (ha)") %>%
   mutate(zekerheid = ifelse(zekerheid == "beste_oppvl_zeker",
@@ -110,8 +109,8 @@ data_area %>% filter(hab == this_hab) %>%
               values_from = value) %>% {. ->> b } %>%
   left_join(trend_translate, by = c("trend" = "trendeng")) %>%
   left_join(status_translate, by = c("conclusie" = "statuseng")) %>%
-  mutate(area = as.numeric(str_replace(area,',','.'))*100,#vierkante kilometer naar hectare
-         sbz = round(as.numeric(str_replace(areasbz,',','.'))/area*10000)) %>%#percentage in sbz
+  mutate(area = as.numeric(str_replace(area,',','.')) * 100,#km² -> ha
+         sbz = round(as.numeric(str_replace(areasbz,',','.'))/area * 10000)) %>% #percentage in sbz
   dplyr::select(code, area, sbz, trendnl, fra, statusnl) %>%
   arrange(code) %>%
   kable(booktabs = TRUE, 
@@ -134,17 +133,18 @@ data_area %>% filter(hab == this_hab) %>%
  
 ### Beoordeling regionale toestand
 ```{r {{id}}-voorbereidinghabitatkwaliteit }
-colors_status <- c("Ongunstig" = inbo_rood, "Gunstig" = inbo_groen, 
-                   "Onbekend" = inbo_grijs)
+colors_status <- c("Ongunstig" = INBOtheme::inbo_rood, 
+                   "Gunstig" = INBOtheme::inbo_groen, 
+                   "Onbekend" = INBOtheme::inbo_grijs)
 data_stathab <- data_statushabitat %>%
   filter(Habitattype %in% 
            unlist(habitattypes[habitattypes$id == this_hab, "main_type"]) & 
-           !(Habitattype %in% c('9110', '9150', '1110') |
-             str_detect(Habitattype, "rbb")) & 
+           !(Habitattype %in% excluded_habitats | str_detect(Habitattype, "rbb")) & 
            (TypeResultaat == "Habitattype" | is.na(TypeResultaat)) #& 
            # (SBZH == "Binnen & Buiten") & 
            # (Schaal == "Vlaanderen")
         ) 
+
 if (nrow(data_stathab) > 0) {
   grenswaardes <- unique(data_stathab$Grenswaarde)
   heights <- sapply(grenswaardes, 
@@ -160,9 +160,7 @@ if (nrow(data_stathab) > 0) {
 plots <- lapply(X = grenswaardes, 
                 FUN = function(x) plot_statushabitat(data_stathab, x))
   
-wrap_plots(plots, ncol = 1, 
-           guides = "collect",
-           heights = heights) & 
+patchwork::wrap_plots(plots, ncol = 1, guides = "collect", heights = heights) & 
   theme(legend.position = "bottom")
 ```
 
@@ -172,8 +170,7 @@ wrap_plots(plots, ncol = 1,
 data_soorten_samenhang %>% 
   filter(Habitattype %in% 
            unlist(habitattypes[habitattypes$id == this_hab, "main_type"]) & 
-           !(Habitattype %in% c('9110', '9150', '1110') |
-             str_detect(Habitattype, "rbb"))) %>%
+           !(Habitattype %in% excluded_habitats | str_detect(Habitattype, "rbb"))) %>%
   group_by(Criterium, Indicator) %>%
   summarize(n_belang = any(Belang == "zb") + any(Belang == 'b')) %>%
   filter(n_belang > 1) %>% pull(Criterium) -> A
@@ -181,8 +178,7 @@ if (length(A) > 0) {
   data_ss <- data_soorten_samenhang %>% 
   filter(Habitattype %in% 
            unlist(habitattypes[habitattypes$id == this_hab, "main_type"]) & 
-           !(Habitattype %in% c('9110', '9150', '1110') |
-             str_detect(Habitattype, "rbb"))) %>%
+           !(Habitattype %in% excluded_habitats | str_detect(Habitattype, "rbb"))) %>%
     left_join(as.data.frame(sapply(toekomst_translate, str_to_lower)), 
               by = c("Toestand" = "toekomsteng")) %>% {. ->> temp_colors} %>%
     mutate(Toestand = ifelse(Criterium %in% A,
@@ -199,8 +195,7 @@ if (length(A) > 0) {
   data_ss <- data_soorten_samenhang %>% 
   filter(Habitattype %in% 
            unlist(habitattypes[habitattypes$id == this_hab, "main_type"]) & 
-           !(Habitattype %in% c('9110', '9150', '1110') |
-             str_detect(Habitattype, "rbb"))) %>%
+           !(Habitattype %in% excluded_habitats | str_detect(Habitattype, "rbb"))) %>%
     left_join(as.data.frame(sapply(toekomst_translate, str_to_lower)), 
               by = c("Toestand" = "toekomsteng")) %>% {. ->> temp_colors} %>%
     mutate(Toestand = toekomstnl) %>%
@@ -218,12 +213,16 @@ data_ss %>%
   pivot_wider(names_from = Habitattype,
               values_from = Toestand) %>%
   replace(is.na(.), "n.v.t") -> t
+
 for (column in 3:(3 + n_distinct(data_ss$Habitattype) - 1)) {
   for (row in 1:3) {
-  t[row, column + 1] <- cell_spec(t[row, column + 1], "latex", background = temp_colors[row, column])
-}}
+    t[row, column + 1] <- cell_spec(t[row, column + 1], "latex", 
+                                    background = temp_colors[row, column])
+  }
+}
 t[1,2] <- "flora\\&fauna (niveau VL)"
-t %>%#want we gaan dit renderen als een latex table
+
+t %>% #want we gaan dit renderen als een latex table
   kable(booktabs = TRUE, 
         caption = "Overzicht van de indicatorscores van de criteria ‘Typische soorten’ en ‘Ruimtelijke samenhang’, met vermelding van hun belang ((z)b = (zeer) belangrijk.",
         format = "latex",
@@ -261,23 +260,39 @@ data_struc_func_final %>% filter(hab == this_hab) %>%
 ```{r, child = find_root_file("habitatauteurs_paragrafen", sprintf("%s_regionale_toestand.md", this_hab), criterion = has_file("bookdown.Rproj"))}
 ```
 
+### Trends en toestand in regionale toestand binnen SBZ-H vs Vlaanderen
+
+Mogelijks nog aanvullen
+
+### Trends in regionale toestand
+
+Mogelijks nog aanvullen
+
+
 
 ### Beoordeling LSVI indicator
 
 ```{r {{id}}-voorbereidinghabitatkwaliteit2, warning = FALSE, message = FALSE }
-data_lsvi <- data_aandeelgunstig %>%
-  filter(Habitattype %in% 
-           unlist(habitattypes[habitattypes$id == this_hab, "main_type"]) & 
-           !(Habitattype %in% c('9110', '9150', '1110') |
-             str_detect(Habitattype, "rbb")) &
-           (TypeResultaat == "Habitattype" | is.na(TypeResultaat))
-        ) %>%
+
+main_types <- unlist(habitattypes[habitattypes$id == this_hab, "main_type"])
+
+#Work in progress (moesten we ooit verschil binnen en buiten SBZH willen bekijken)
+data_lsvi_x <- data_aandeelgunstig %>%
+  filter(Habitattype %in% main_types,
+           !(Habitattype %in% excluded_habitats  | str_detect(Habitattype, "rbb")),
+           (TypeResultaat == "Habitattype" | is.na(TypeResultaat)) | 
+           (TypeResultaat == "SBZH" & SBZH == "Binnen"),
+         Versie == "Versie 3") |> 
   dplyr::select(!c(Criterium, Belang)) %>%
-  mutate(Indicator = str_replace(Indicator, "\xeb","ë"),
-         Indicator = str_replace(Indicator, "\xe9\xe9","éé")) %>%
+  #xe9 en xeb worden niet ondercheiden
+  mutate(Indicator = str_replace(Indicator, "\xeb", "XXXXX"),
+         Indicator = str_replace(Indicator, "\xe9", "YYYYY"),
+         Indicator = str_replace(Indicator, "XXXXXYYYYY", "éé"),
+         Indicator = str_replace(Indicator, "XXXXX", "ë")) %>%
   left_join(invoerVer, by = c("Habitattype", "Versie", "Indicator")) %>% #invoerVer wordt opgehaald in 4_Rapport_per_habitat.Rmd
   mutate(Indicatorbis = tolower(Indicator)) 
 
+data_lsvi <- data_lsvi_x |> filter(TypeResultaat != "SBZH")
 if (nrow(data_lsvi) > 0) {
   tekst_belang <- data_lsvi %>%
     select(Criterium, Indicator, Indicatorbis, Belang) %>%
@@ -296,6 +311,7 @@ if (nrow(data_lsvi) > 0) {
                                      "Criterium"]))
                       return(c(indicators, criteria))})
   height_figure <- 2 * (length(heights)) + 1 * sum(heights)
+  #mogelijks nog overlappende lijnen door "Periode"
   plots <- lapply(X = habs, 
                 FUN = function(x) plot_indicatoren(data_lsvi, x))
 }
@@ -321,9 +337,20 @@ sprintf(
 
 ```
 
+### Trends in LSVI
+
+Mogelijks nieuwe input
 
 
+
+### Trends en toestand in LSVI binnen SBZ-H vs Vlaanderen
+
+Mogelijks nog aanvullen
+
+
+<!---
 ### Vergelijking resultaten Oosterlynck et al. 2018 versus T'Jollyn et al. 2009
+--->
 
 ## Drukken en bedreigingen
 
