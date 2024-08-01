@@ -53,7 +53,7 @@ lot: TRUE
 lof: TRUE
 site: bookdown::bookdown_site
 link-citations: TRUE
-bibliography: "bibliography.bib"
+bibliography: "combined_references.bib"
 output:
   INBOmd::pdf_report: default
   bookdown::dontrun: default
