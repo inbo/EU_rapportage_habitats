@@ -25,7 +25,7 @@ template_data <-
   filter(typelevel == "main_type", !str_detect(type, "rbb")) |>
   select(
     habitatgroep = typeclass_name,
-    habitat = type
+    habitattype = type
   ) |>
   crossing(
     read_env_pressures(lang = "nl") |>
@@ -36,7 +36,7 @@ template_data <-
     scope_2025 = NA_character_,
     impact_2025 = NA_character_
   ) |>
-  nest(habitatdata = -c(matches("habitat"))) |>
+  nest(habitattypedata = -c(matches("habitat"))) |>
   nest(habitatgroepdata = -habitatgroep) |>
   # slice(1) |>
   mutate(ss_id = map_chr(habitatgroep, function(tc) {
@@ -51,7 +51,7 @@ walk2(
   template_data$ss_id,
   template_data$habitatgroepdata,
   function(id, tcd) {
-    walk2(tcd$habitat, tcd$habitatdata, function(hab, df) {
+    walk2(tcd$habitattype, tcd$habitattypedata, function(hab, df) {
       write_sheet(df, ss = id, sheet = as.character(hab))
     })
     # delete sheet 'Blad1':
@@ -68,11 +68,11 @@ read_types(lang = "nl") |>
   filter(typelevel == "main_type", !str_detect(type, "rbb")) |>
   select(
     habitatgroep = typeclass_name,
-    habitat = type,
+    habitattype = type,
     verkorte_naam = type_shortname,
     naam = type_name
   ) |>
-  write_sheet(ss = id_legend, sheet = "habitats")
+  write_sheet(ss = id_legend, sheet = "habitattypes")
 
 read_env_pressures(lang = "nl") |>
   select(
