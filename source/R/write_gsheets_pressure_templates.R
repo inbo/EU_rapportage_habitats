@@ -5,6 +5,7 @@ library(stringr)
 library(purrr)
 library(googlesheets4)
 library(googledrive)
+conflicted::conflicts_prefer(dplyr::filter)
 
 # Setup for googledrive authentication. Set the appropriate env vars in
 # .Renviron and make sure you ran drive_auth() interactively with these settings
