@@ -8,9 +8,9 @@ library(pool)
 poolClose(ConnectiePool)
 rm(ConnectiePool)
 
-auteurs <- readxl::read_excel(
-  path = find_root_file("data/raw/habitatauteurs.xlsx",
-                        criterion = has_file("EU_rapportage_habitats.Rproj")))
+auteurs <- read_delim(
+  find_root_file("data/raw/habitatauteurs.txt",
+                 criterion = has_file("EU_rapportage_habitats.Rproj")))
 
 sapply(
   c("zilt", "kustduin", "water", "heide", "gras", "veen", 

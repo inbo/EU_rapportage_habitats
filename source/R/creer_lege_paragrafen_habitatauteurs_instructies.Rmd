@@ -2,8 +2,11 @@
 params: 
   id: "zilt"
   paragraaf: "inleiding"
+header-includes: \usepackage{xcolor}
 output:
   pdf_document
+bibliography:
+  - voorbeeld_bibliografie.bib
 ---
 
 ```{r setup, include=FALSE}
@@ -24,10 +27,13 @@ hab <- habitattypes %>%
          `type_shortname`) 
 ```
 
+# Tekstopmaak
 
 In ieder van de documenten schrijf je een stuk tekst dat bij het desbetreffende hoofdstuk, de figuur of tabel hoort. 
 
 Indien je tekst in *italics* wil schrijven, doe je dat door voor en na dit stuk tekst een '\*'asterisk'\*' te zetten. Voor **bold** tekst, zet je twee '\*\*'asterisken'\*\*' voor en na je stuk tekst dat je vet gedrukt wil zien in het rapport.
+
+# Refereren naar tabellen en figuren
 
 Je kan ook refereren naar de verschillende tabellen en figuren in het originele document, dat doe je zo:
 
@@ -45,3 +51,62 @@ Je kan ook refereren naar de verschillende tabellen en figuren in het originele 
 - Schrijf tabel \\@ref(tab:`r params$id`-toekomst) om te refereren naar de tabel met toekomstperspectieven.
 - Schrijf tabel \\@ref(tab:`r params$id`-conclusie) om te refereren naar de samenvattende tabel van de conclusies per criterium en einduitspraak over de algemene toestand en trend van de instandhouding per habitattype.
 
+# Refereren naar de literatuur
+
+Om te kunnen refereren naar de literatuur, moet er eerst een bibliografie opgebouwd worden.
+We raden aan om enkel werken op te nemen in de bibliografie waarnaar in de tekst gerefereerd wordt.
+Zodra een werk is opgenomen in de bibliografie kan je het werk citeren door het label te gebruiken.
+
+## Bibliografie opmaken
+
+We vragen ol je bibliografie in BibTex formaat aan te leveren. 
+
+Zotero gebruikers volgen de volgende stappen:
+
+- Selecteer alle items die je in je bibligrafie wil opnemen.
+- Klik rechts op de geselecteerde bestanden en kies "Gesecteerde items exporteren...".
+- Kies bibtex formaat en sla je bibliografie lokaal op als , bijvoorbeeld, *`r params$id`-refs.bibtex*.
+
+Voor EndNote gebruikers raden we aan om de geselecteerde referenties op de volgende manier te exporteren in BibTex format:
+
+- Edit -> Output Styles -> Open de style manager enkies BibTex export entry.
+- Zorg er ook voor dat BibTex Export aangevinkt is in het menu Edit -> Output styles
+- Kies File -> Export, selecteer "Text file" al bestandsformaat in het dropdown menu en bewaar het bestand als, bijvoorbeeld, *`r params$id`-refs.bibtex*.
+
+Vervolgens laadt je je .bibtex bestand(en) vervolgens op in [deze Google drive map](https://drive.google.com/drive/folders/1iPCilJi0VX6qtMduInqvmR186N6YGffw).
+
+Meer informatie over citaties in een RMarkDown bestand vindt je op onze [tutorials pagina](https://inbo.github.io/tutorials/tutorials/r_citations_markdown/).
+
+## Literatuur citeren in je tekst
+
+Ieder werk in je bibliografie zal een label gekregen hebben. Dat label vind je terug in je .bibtex file. Je kan je .bibtex file openen in kladblok of Rstudio.
+
+Een .bibtex element voor het boek van Agresti ziet er uit zoals hieronder weergegeven. Het label is dan `agresti_categorical_2012`.
+
+```{css echo = TRUE, eval = FALSE}
+@book{agresti_categorical_2012,
+	title = {Categorical {Data} {Analysis}},
+	isbn = {978-0-470-46363-5},
+	language = {en},
+	publisher = {John Wiley \& Sons},
+	author = {Agresti, Alan},
+	month = dec,
+	year = {2012},
+	keywords = {Computers / Data Science / Data Analytics, Mathematics /
+	General, Mathematics / Probability \& Statistics / General, Mathematics /
+	Probability \& Statistics / Multivariate Analysis, Mathematics / 
+	Probability \& Statistics / Stochastic Processes},
+}
+```
+
+Met behulp van de labels kan je nu het boek citeren. 
+Schrijf `@agresti_categorical_2012` om zonder haakjes te citeren:
+
+@agresti_categorical_2012 is een boek over categorische data analyse.
+
+Schrijf `[@agresti_categorical_2012]` om met haakjes te citeren:
+
+Er bestaan heel wat boeken over categorische data analyse [@agresti_categorical_2012].
+
+
+# Bibliografie
