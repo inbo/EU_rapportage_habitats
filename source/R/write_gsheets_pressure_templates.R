@@ -35,7 +35,7 @@ template_data <-
   mutate(
     timing_2025 = NA_character_,
     scope_2025 = NA_character_,
-    impact_2025 = NA_character_
+    influence_2025 = NA_character_
   ) |>
   nest(habitattypedata = -c(matches("habitat"))) |>
   nest(habitatgroepdata = -habitatgroep) |>
